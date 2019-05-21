@@ -16,6 +16,8 @@ class Index extends React.Component<{},{}>{
 	}
 
 	refresh(){
+		var isShown
+		var boxMesh
 		var camera, scene, renderer;
 		var isUserInteracting = false,
 			onMouseDownMouseX = 0, onMouseDownMouseY = 0,
@@ -29,6 +31,7 @@ class Index extends React.Component<{},{}>{
 			container = document.getElementById( 'container' );
 			camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 1100 );
 			camera.target = new THREE.Vector3( 0, 0, 0 );
+			camera.position.x		= 0.01
 			scene = new THREE.Scene();
 			var geometry = new THREE.SphereBufferGeometry( 500, 60, 40 );
 			// invert the geometry on the x-axis so that all of the faces point inward
@@ -37,6 +40,27 @@ class Index extends React.Component<{},{}>{
 			var material = new THREE.MeshBasicMaterial( { map: texture } );
 			mesh = new THREE.Mesh( geometry, material );
 			scene.add( mesh );
+
+			//a box
+			const boxGeometry		= new THREE.BoxGeometry(20, 80, 20)
+			const boxMaterial		= new THREE.MeshBasicMaterial({color:'0x0000ff'})
+			boxMesh		= new THREE.Mesh(boxGeometry, boxMaterial)
+			boxMesh.position.x		= 100
+			boxMesh.position.z		= -50
+			boxMesh.position.y		= -20
+			//boxMesh.rotation.y		= (Math.PI / 180) * 25
+			scene.add(boxMesh)
+
+			//helper
+			const axesHelper		= new THREE.AxesHelper(500)
+			scene.add(axesHelper)
+			const cameraHelper		= new THREE.CameraHelper(camera)
+			scene.add(cameraHelper)
+			const polarGridHelper		= new THREE.PolarGridHelper()
+			scene.add(polarGridHelper)
+			const boxHelper		= new THREE.VertexNormalsHelper( boxMesh, 2, 0x00ff00, 1 );
+			scene.add(boxHelper)
+
 			renderer = new THREE.WebGLRenderer();
 			renderer.setPixelRatio( window.devicePixelRatio );
 			renderer.setSize( window.innerWidth, window.innerHeight );
@@ -119,10 +143,14 @@ class Index extends React.Component<{},{}>{
 			camera.updateProjectionMatrix();
 		}
 		function animate() {
-			requestAnimationFrame( animate );
+			//slow down
+			setTimeout(() => {
+				requestAnimationFrame( animate );
+			}, 1000)
 			update();
 		}
 		function update() {
+			console.log('update')
 			if ( isUserInteracting === false ) {
 				//lon += 0.1;
 			}
@@ -133,6 +161,14 @@ class Index extends React.Component<{},{}>{
 			camera.target.y = 500 * Math.cos( phi );
 			camera.target.z = 500 * Math.sin( phi ) * Math.sin( theta );
 			camera.lookAt( camera.target );
+			if(!isShown){
+				console.log('the camera:', camera.toJSON())
+				console.log('the camera position:', camera.position)
+				console.log('the camera rotation:', camera.rotation)
+				isShown		= true
+
+				console.log('the box:', boxMesh)
+			}
 			/*
 				// distortion
 				camera.position.copy( camera.target ).negate();
