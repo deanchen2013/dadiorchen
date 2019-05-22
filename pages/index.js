@@ -18,7 +18,7 @@ class Index extends React.Component<{},{}>{
 	refresh(){
 		var isShown
 		var boxMesh
-		var camera, scene, renderer;
+		var camera, scene, renderer, sceneDOM, rendererDOM;
 		var isUserInteracting = false,
 			onMouseDownMouseX = 0, onMouseDownMouseY = 0,
 			lon = 0, onMouseDownLon = 0,
@@ -31,7 +31,6 @@ class Index extends React.Component<{},{}>{
 			container = document.getElementById( 'container' );
 			camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 1100 );
 			camera.target = new THREE.Vector3( 0, 0, 0 );
-			camera.position.x		= 0.01
 			scene = new THREE.Scene();
 			var geometry = new THREE.SphereBufferGeometry( 500, 60, 40 );
 			// invert the geometry on the x-axis so that all of the faces point inward
@@ -49,7 +48,7 @@ class Index extends React.Component<{},{}>{
 			boxMesh.position.z		= -50
 			boxMesh.position.y		= -20
 			//boxMesh.rotation.y		= (Math.PI / 180) * 25
-			scene.add(boxMesh)
+			//scene.add(boxMesh)
 
 			//helper
 			const axesHelper		= new THREE.AxesHelper(500)
@@ -59,13 +58,47 @@ class Index extends React.Component<{},{}>{
 			const polarGridHelper		= new THREE.PolarGridHelper()
 			scene.add(polarGridHelper)
 			const boxHelper		= new THREE.VertexNormalsHelper( boxMesh, 2, 0x00ff00, 1 );
-			scene.add(boxHelper)
+			//scene.add(boxHelper)
 
 			renderer = new THREE.WebGLRenderer();
 			renderer.setPixelRatio( window.devicePixelRatio );
 			renderer.setSize( window.innerWidth, window.innerHeight );
 			//$FlowFixMe
 			container.appendChild( renderer.domElement );
+
+			//for DOM
+			const containerDOM		= document.getElementById('containerDOM')
+			//clear
+			////$FlowFixMe
+			containerDOM.innerHTML		= ''
+			sceneDOM		= new THREE.Scene()
+			rendererDOM		= new THREE.CSS3DRenderer()
+			rendererDOM.setSize( window.innerWidth, window.innerHeight )
+			rendererDOM.domElement.style.position = 'absolute'
+			rendererDOM.domElement.style.top = 0
+			//$FlowFixMe
+			containerDOM.appendChild( rendererDOM.domElement );
+			//me
+			const meElement		= document.getElementById('me')
+			var object = new THREE.CSS3DObject(meElement);
+			object.position.copy( new THREE.Vector3(450, -50, -100) );
+			object.rotation.copy( new THREE.Euler(
+				0,
+				-90 * THREE.Math.DEG2RAD, 
+				0,
+			))
+			sceneDOM.add( object );
+			//slogon
+			const slogonElement		= document.getElementById('slogon')
+			const slogonObject		= new THREE.CSS3DObject(slogonElement)
+			slogonObject.position.copy( new THREE.Vector3(450, -50, 100) );
+			slogonObject.rotation.copy( new THREE.Euler(
+				0,
+				-90 * THREE.Math.DEG2RAD, 
+				0,
+			))
+			sceneDOM.add( slogonObject );
+
 			//$FlowFixMe
 			document.addEventListener( 'mousedown', onPointerStart, false );
 			//$FlowFixMe
@@ -174,6 +207,7 @@ class Index extends React.Component<{},{}>{
 				camera.position.copy( camera.target ).negate();
 				*/
 			renderer.render( scene, camera );
+			rendererDOM.render( sceneDOM, camera );
 		}
 	}
 
@@ -184,7 +218,28 @@ class Index extends React.Component<{},{}>{
 						body {
 							margin		: 0;
 						}
-					  `}</style>
+					  `}
+				</style>
+				<img
+					id='me'
+					style={{
+						position		: 'absolute',
+						height		: 350,
+					}}
+					src='/static/me.png'
+					/>
+				<div
+					id='slogon'
+					style={{
+						position		: 'absolute',
+						color		: 'white',
+						fontSize		: 32,
+						width		: 200,
+					}}
+				>
+					Hi, I am Chen, I just do right things.
+				</div>
+				<div id='containerDOM' />
 			</div>
 		)
 	}
