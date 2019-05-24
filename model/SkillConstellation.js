@@ -108,6 +108,34 @@ export default class SkillConstellation{
 		const {nodes, links}		= build(this.setting.data)
 		this.nodes		= nodes
 		this.links		= links
+		let orbitNodes		= 0
+		this.nodes.forEach(node => {
+			if(node.level === 0){
+				orbitNodes++
+				if(orbitNodes === 1){
+					//$FlowFixMe
+					node.fz		= 0
+				}else if(orbitNodes > 1 && orbitNodes <= 8){
+					//$FlowFixMe
+					node.fz		= - this.setting.lineDistance
+				}else if(orbitNodes > 8 && orbitNodes <= 27){
+					//$FlowFixMe
+					node.fz		= - this.setting.lineDistance * 2
+				}else if(orbitNodes > 27 && orbitNodes <= 64){
+					//$FlowFixMe
+					node.fz		= - this.setting.lineDistance * 3
+				}else if(orbitNodes > 64 ){
+					//$FlowFixMe
+					node.fz		= - this.setting.lineDistance * 4
+				}
+			}
+		})
+		//fix the 0 node
+		////$FlowFixMe
+//		nodes[0].fx		= 0
+//		//$FlowFixMe
+//		nodes[0].fy		= 0
+		//$FlowFixMe
 		this.force		= layout(
 			nodes, 
 			links, 
@@ -180,13 +208,6 @@ export default class SkillConstellation{
 		var helper = new THREE.PolarGridHelper( radius, radials, circles, divisions );
 		this.sceneWebGL.add( helper );
 
-//		//fix the 0 node
-//		////$FlowFixMe
-//		nodes[0].fx		= 0
-//		//$FlowFixMe
-//		nodes[0].fy		= 0
-//		//$FlowFixMe
-//		nodes[0].fz		= 0
 		//console.log('nodes:', nodes)
 		for(let node of this.nodes){
 			//this is the first time

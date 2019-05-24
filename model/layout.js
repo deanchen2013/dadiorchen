@@ -45,12 +45,13 @@ export function build(
 ){
 	const nodes		= []
 	const links		= []
-	function goThrough(data : any, parent : any){
+	function goThrough(data : any, parent : any, level : number){
 		data.forEach((node : any) => {
 			const newNode		= {
 				index		: nodes.length,
 				name		: node.name,
 				weight		: node.weight,
+				level		: level,
 			}
 			nodes.push(newNode)
 			//link
@@ -62,10 +63,10 @@ export function build(
 				})
 			}
 			if(node.children){
-				goThrough(node.children, newNode)
+				goThrough(node.children, newNode, level + 1)
 			}
 		})
 	}
-	goThrough(dataJSON)
+	goThrough(dataJSON, undefined, 0)
 	return {nodes, links}
 }

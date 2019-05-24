@@ -22,7 +22,7 @@ describe('?', () => {
 				index		: 0
 			}
 		]
-		layout(nodes, links, false)
+		layout(nodes, links, false, 30)
 		console.log('nodes:', nodes)
 		console.log('links:', links)
 	})

@@ -1,8 +1,8 @@
 //@flow
 import React		from 'react'
-import SkillConstellation		from '../../model/SkillConstellation.js'
-import {layout, build}		from '../../model/layout.js'
-import THREE		from '../../three.js'
+import SkillConstellation		from '../model/SkillConstellation.js'
+import {layout, build}		from '../model/layout.js'
+import THREE		from '../three.js'
 
 class Index extends React.Component<{},{}>{
 	skillConstellation		: any
@@ -100,8 +100,29 @@ class Index extends React.Component<{},{}>{
 						{
 							name		: 'spring',
 							weight		: 5,
+						},{
+							name		: 'Hibernate',
+							weight		: 3,
 						}
 					]
+				},{
+					name		: 'Linux',
+					weight		: 7,
+					children		: [
+						{
+							name		: 'SHELL',
+							weight		: 4,
+						},{
+							name		: 'Redhat',
+							weight		: 5,
+						},{
+							name		: 'iptables',
+							weight		: 3,
+						}
+					],
+				},{
+					name		: 'Git',
+					weight		: 3,
 				}
 				//}}}
 			]
