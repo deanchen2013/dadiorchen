@@ -1,8 +1,12 @@
 //@flow
 import React		from 'react'
+import SkillConstellation		from '../../model/SkillConstellation.js'
+import {layout, build}		from '../../model/layout.js'
 import THREE		from '../../three.js'
 
 class Index extends React.Component<{},{}>{
+	skillConstellation		: any
+
 	constructor(props : any){
 		super(props)
 	}
@@ -16,65 +20,95 @@ class Index extends React.Component<{},{}>{
 	}
 
 	refresh(){
-		//the camera & controller
-		var frustumSize = 500;
-		//use this to make the coordination is a square 
-		var aspect = window.innerWidth / window.innerHeight;
-		const camera = new THREE.OrthographicCamera( 
-			frustumSize * aspect / - 2, 
-			frustumSize * aspect / 2, 
-			frustumSize / 2, 
-			frustumSize / - 2, 
-			1, 
-			1000 
-		);
-		camera.position.set(-200, 200, 200)
-		const controls		= new THREE.OrbitControls(camera)
-		const scene		= new THREE.Scene()
-		const renderer		= new THREE.CSS3DRenderer()
-		renderer.setSize(window.innerWidth, window.innerHeight)
-		renderer.domElement.style.position		= 'absolute'
-		renderer.domElement.style.top		= 0
-		//$FlowFixMe
-		document.getElementById('containerDOM').appendChild(renderer.domElement)
-		//mount
-		const DOMObject		= new THREE.CSS3DObject(
-			document.getElementById('a')
-		)
-		DOMObject.position.set(0, 0, 0)
-		scene.add(DOMObject)
-		/*
-		 * the scene 2
-		 */
-		const sceneWebGL		= new THREE.Scene()
-		sceneWebGL.background = new THREE.Color( 0xf0f0f0 );
-		const rendererWebGL		= new THREE.WebGLRenderer()
-		rendererWebGL.setPixelRatio( window.devicePixelRatio );
-		rendererWebGL.setSize( window.innerWidth, window.innerHeight );
-		document.getElementById('containerWebGL')
-			//$FlowFixMe
-			.appendChild( rendererWebGL.domElement );
-
-		function animate(){
-			requestAnimationFrame(animate)
-			renderer.render(scene, camera)
-			rendererWebGL.render(sceneWebGL, camera)
-		}
-		//helper
-		const axesHelper		= new THREE.AxesHelper(500)
-		sceneWebGL.add(axesHelper)
-		const cameraHelper		= new THREE.CameraHelper(camera)
-		sceneWebGL.add(cameraHelper)
-		var gridHelper = new THREE.GridHelper( 100, 10 );
-		sceneWebGL.add( gridHelper );
-//		var radius = 100;
-//		var radials = 160;
-//		var circles = 8;
-//		var divisions = 64;
-//		var helper = new THREE.PolarGridHelper( radius, radials, circles, divisions );
-//		sceneWebGL.add( helper );
-
-		animate()
+		this.skillConstellation		= new SkillConstellation({
+			container		: document.getElementById('container'),
+			isAnimated		: true,
+			backgroundPicture		: '/static/space.png',
+			lineColor		: 0xffffff,
+			lineDistance		: 100,
+			textType		: 'CSS',
+			textCSS		: (node) => {
+				return (
+					<div
+						style={{
+							color		: 'yellow',
+							fontSize		: 32 * (node.weight/10) + 'px'
+						}}
+					>
+						{node.name}
+					</div>
+				)
+			},
+			textMesh		: (node, font) =>{
+				//WebGL text
+				const textGeometry = new THREE.TextGeometry( node.name, {
+					font: font,
+					size: 28 * (node.weight/10),
+					height: 5 * (node.weight/10),
+	//					curveSegments: 12,
+	//					bevelEnabled: true,
+	//					bevelThickness: 8,
+	//					bevelSize: 8,
+	//					bevelOffset: 0,
+	//					bevelSegments: 5
+				} );
+				const textMaterial		= new THREE.MeshNormalMaterial({
+					color		: 0x00ffff,
+				})
+				return new THREE.Mesh(textGeometry, textMaterial)
+			},
+			data		: [
+				//{{{
+				{
+					name		: 'Javascript',
+					weight		: 8,
+					children		: [
+						{
+							name		: 'React',
+							weight		: 8,
+							children		: [
+								{
+									name		: 'Redux',
+									weight		: 3,
+								},{
+									name		: 'Flow',
+									weight		: 3,
+								},{
+									name		: 'Jest',
+									weight		: 5,
+								},{
+									name		: 'Next.js',
+									weight		: 3,
+								}
+							],
+						},{
+							name		: 'D3',
+							weight		: 6,
+						},{
+							name		: 'Three.js',
+							weight		: 3,
+						},{
+							name		: 'Node.js',
+							weight		: 6,
+						}
+					],
+				},{
+					name		: 'Java',
+					weight		: 6,
+					children		: [
+						{
+							name		: 'spring',
+							weight		: 5,
+						}
+					]
+				}
+				//}}}
+			]
+		})
+		this.skillConstellation.init()
+			.then(() => {
+				this.skillConstellation.animate()
+			})
 	}
 
 	render(){
@@ -84,15 +118,21 @@ class Index extends React.Component<{},{}>{
 						body {
 							margin		: 0;
 						}
+						.dot {
+							width		: 2px;
+							height		: 2px;
+							background		: red;
+							border-radius		: 50%;
+						}
+						.text		{
+							color		: white;
+							background		: black;
+							opacity		: 0.5;
+						}
 					  `}
 				</style>
-				<div
-					id='a'
-				>
-					A thing
-				</div>
-				<div id='containerDOM' />
-				<div id='containerWebGL' />
+				<div id='container' />
+				<div id='test' />
 			</div>
 		)
 	}
