@@ -22,11 +22,12 @@ class Index extends React.Component<{},{}>{
 	refresh(){
 		this.skillConstellation		= new SkillConstellation({
 			container		: document.getElementById('container'),
-			isAnimated		: true,
+			isAnimated		: false,
 			backgroundPicture		: '/static/space.png',
 			lineColor		: 0xffffff,
 			lineDistance		: 100,
-			textType		: 'CSS',
+			textType		: 'THREE',
+			cameraType		: 'perspective',
 			textCSS		: (node) => {
 				return (
 					<div
