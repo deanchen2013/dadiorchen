@@ -37,7 +37,7 @@ class Index extends React.Component<{},{}>{
 			/*
 			 * isAnimated = true	: there is an animation when it show up
 			 */
-			isAnimated		: true,
+			isAnimated		: false,
 			/*
 			 * the path to background picture of the component, need copy the 
 			 * picture to [project root dir]/static/  
@@ -65,8 +65,20 @@ class Index extends React.Component<{},{}>{
 			 */
 			height		: window.innerHeight,
 			/*
+			 * if true, the text will always keep facing to the camera
+			 */
+			isTextDirectionFixed		: true,
+			/*
+			 * if true, the camera will rotate automatically
+			 */
+			isAutoRotated		: false,
+			/*
+			 * the speed of camera rotation
+			 */
+			autoRotationSpeed		: 1,
+			/*
 			 * cameraType	= 'perspective' : the camera is first person view
-			 * cameraType	= 'obit'		: the camera is third person view
+			 * cameraType	= 'orbit'		: the camera is third person view
 			 */
 			cameraType		: 'perspective',
 			/*
@@ -119,11 +131,22 @@ class Index extends React.Component<{},{}>{
 				return (
 					<div
 						style={{
-							color		: colors(node.name),
-							fontSize		: 32 * (node.weight/10) + 'px',
+							backgroundColor		: colors(node.name),
+							width		: 32 * (node.weight/10) + 'px',
+							height		: 32 * (node.weight/10) + 'px',
+							borderRadius		: '50%',
 						}}
 					>
-						{node.name}
+						<div
+							style={{
+								position		: 'absolute',
+								color		: 'white',
+								left		: 32 * (node.weight/10) + 5 + 'px' ,
+								fontSize		: 14,
+							}}
+						>
+							{node.name}
+						</div>
 					</div>
 				)
 			},
@@ -240,24 +263,30 @@ class Index extends React.Component<{},{}>{
 		this.gui.add(this.setting, 'isAnimated').onFinishChange(this.refresh)
 		this.gui.add(this.setting, 'textType', ['CSS', 'THREE']).onFinishChange(this.refresh)
 		this.gui.add(this.setting, 'cameraType', ['orbit', 'perspective']).onFinishChange(this.refresh)
-		this.gui.add(this.setting, 'cameraPerspectivePositionX', 0, 500).onFinishChange(this.refresh)
-		this.gui.add(this.setting, 'cameraPerspectivePositionY', 0, 500).onFinishChange(this.refresh)
-		this.gui.add(this.setting, 'cameraPerspectivePositionZ', 0, 500).onFinishChange(this.refresh)
-		this.gui.add(this.setting, 'cameraPerspectiveAngleX', -90, 90).onFinishChange(this.refresh)
-		this.gui.add(this.setting, 'cameraPerspectiveAngleY', -90, 90).onFinishChange(this.refresh)
-		this.gui.add(this.setting, 'cameraPerspectiveAngleZ', -90, 90).onFinishChange(this.refresh)
-		this.gui.add(this.setting, 'cameraObitPositionX', -500, 500).onFinishChange(this.refresh)
-		this.gui.add(this.setting, 'cameraObitPositionY', -500, 500).onFinishChange(this.refresh)
-		this.gui.add(this.setting, 'cameraObitPositionZ', -500, 500).onFinishChange(this.refresh)
-		this.gui.add(this.setting, 'cameraObitFrustmSize', 0, 1000).onFinishChange(this.refresh)
-		this.gui.add(this.setting, 'strengthPushAllAway', -1000, 1000).onFinishChange(this.refresh)
-		this.gui.add(this.setting, 'strengthPullToX', 0, 1).onFinishChange(this.refresh)
-		this.gui.add(this.setting, 'strengthPullToY', 0, 1).onFinishChange(this.refresh)
-		this.gui.add(this.setting, 'strengthPullToZ', 0, 1).onFinishChange(this.refresh)
-		this.gui.add(this.setting, 'strengthToBounceOtherAway', 0, 1).onFinishChange(this.refresh)
+		const folder		= this.gui.addFolder('adjust camera positon/angle')
+		folder.add(this.setting, 'cameraPerspectivePositionX', 0, 500).onFinishChange(this.refresh)
+		folder.add(this.setting, 'cameraPerspectivePositionY', 0, 500).onFinishChange(this.refresh)
+		folder.add(this.setting, 'cameraPerspectivePositionZ', 0, 500).onFinishChange(this.refresh)
+		folder.add(this.setting, 'cameraPerspectiveAngleX', -90, 90).onFinishChange(this.refresh)
+		folder.add(this.setting, 'cameraPerspectiveAngleY', -90, 90).onFinishChange(this.refresh)
+		folder.add(this.setting, 'cameraPerspectiveAngleZ', -90, 90).onFinishChange(this.refresh)
+		folder.add(this.setting, 'cameraObitPositionX', -500, 500).onFinishChange(this.refresh)
+		folder.add(this.setting, 'cameraObitPositionY', -500, 500).onFinishChange(this.refresh)
+		folder.add(this.setting, 'cameraObitPositionZ', -500, 500).onFinishChange(this.refresh)
+		folder.add(this.setting, 'cameraObitFrustmSize', 0, 1000).onFinishChange(this.refresh)
+		const folderB		= this.gui.addFolder('adjust bounce strength')
+		folderB.add(this.setting, 'strengthPushAllAway', -1000, 1000).onFinishChange(this.refresh)
+		folderB.add(this.setting, 'strengthPullToX', 0, 1).onFinishChange(this.refresh)
+		folderB.add(this.setting, 'strengthPullToY', 0, 1).onFinishChange(this.refresh)
+		folderB.add(this.setting, 'strengthPullToZ', 0, 1).onFinishChange(this.refresh)
+		folderB.add(this.setting, 'strengthToBounceOtherAway', 0, 1).onFinishChange(this.refresh)
 		this.gui.addColor(this.setting, 'lineColor').onFinishChange(this.refresh)
 		this.gui.add(this.setting, 'lineDistance', 1, 500).onFinishChange(this.refresh)
-
+		this.gui.add(this.setting, 'width', 1, 5000).onFinishChange(this.refresh)
+		this.gui.add(this.setting, 'height', 1, 5000).onFinishChange(this.refresh)
+		this.gui.add(this.setting, 'isTextDirectionFixed').onFinishChange(this.refresh)
+		this.gui.add(this.setting, 'isAutoRotated').onFinishChange(this.refresh)
+		this.gui.add(this.setting, 'autoRotationSpeed', 1, 10).onFinishChange(this.refresh)
 	}
 
 	componentWillUnmount(){

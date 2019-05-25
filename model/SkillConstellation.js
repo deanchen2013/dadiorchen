@@ -32,6 +32,9 @@ const settingDefault		= {
 	strengthPullToY		: 0.1,
 	strengthPullToZ		: 0.1,
 	strengthToBounceOtherAway		: 0.5,
+	isTextDirectionFixed		: true,
+	isAutoRotated		: true,
+	autoRotationSpeed		: 1,
 }
 
 export default class SkillConstellation{
@@ -74,6 +77,8 @@ export default class SkillConstellation{
 	phi		= 0
 
 	theta		= 0
+
+	controls		: any
 
 	constructor(
 		setting		: any,
@@ -178,7 +183,9 @@ export default class SkillConstellation{
 		 */
 		this.sceneWebGL		= new THREE.Scene()
 		this.sceneWebGL.background = new THREE.Color( 0xf0f0f0 );
-		this.rendererWebGL		= new THREE.WebGLRenderer()
+		this.rendererWebGL		= new THREE.WebGLRenderer({
+			antialias		: true,
+		})
 		this.rendererWebGL.setPixelRatio( window.devicePixelRatio );
 		this.rendererWebGL.setSize( this.setting.width, this.setting.height);
 		this.setting.container.appendChild( this.rendererWebGL.domElement );
@@ -351,7 +358,11 @@ export default class SkillConstellation{
 				this.setting.cameraObitPositionY,
 				this.setting.cameraObitPositionZ,
 			)
-			const controls		= new THREE.OrbitControls(this.camera)
+			this.controls		= new THREE.OrbitControls(this.camera)
+			if(this.setting.isAutoRotated){
+				this.controls.autoRotate		= true
+				this.controls.autoRotateSpeed		= this.setting.autoRotationSpeed
+			}
 		}else{
 			this.camera = new THREE.PerspectiveCamera( 
 				75, 
@@ -458,6 +469,25 @@ export default class SkillConstellation{
 					node.y,
 					node.z
 				)
+				/*
+				 * rotate the text to towards the camera
+				 */
+				if(this.setting.cameraType === 'orbit' && this.setting.isTextDirectionFixed){
+//					node.object.lookAt(
+//						this.camera.position.x,
+//						node.object.position.y,
+//						this.camera.position.z,
+//					)
+					/*
+					 * node rotate along the Y axes with angle a, a === camera angle a 
+					 * alone Y
+					 */
+					node.object.rotation.set(
+						this.camera.rotation.x,
+						this.camera.rotation.y,
+						this.camera.rotation.z,
+					)
+				}
 			}else{
 			}
 		})
@@ -491,6 +521,10 @@ export default class SkillConstellation{
 			this.camera.target.y = 500 * Math.cos( this.phi );
 			this.camera.target.z = 500 * Math.sin( this.phi ) * Math.sin( this.theta );
 			this.camera.lookAt( this.camera.target );
+		}
+
+		if(this.setting.cameraType === 'orbit' && this.setting.isAutoRotated){
+			this.controls.update()
 		}
 	}
 
