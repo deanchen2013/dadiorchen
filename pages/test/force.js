@@ -27,42 +27,108 @@ class Index extends React.Component<{},{}>{
 
 	init(){
 		this.setting		= {
+			/*
+			 * the DOM div element to mount all the component/canvas and so on
+			 */
 			container		: document.getElementById('container'),
+			/*
+			 * isAnimated = true	: there is an animation when it show up
+			 */
 			isAnimated		: true,
+			/*
+			 * the path to background picture of the component, need copy the 
+			 * picture to [project root dir]/static/  
+			 */
 			backgroundPicture		: '/static/space.png',
+			/*
+			 * the line between two skill nodes
+			 */
 			lineColor		: 0xffffff,
+			/*
+			 * the line distance between two skill nodes
+			 */
 			lineDistance		: 100,
-			textType		: 'THREE',
+			/*
+			 * text type = 'CSS', use CSS+HTML to show text skill node, with setting:textCSS
+			 * text type = 'THREE', use 3D model to show text skill node, with setting: textMesh
+			 */
+			textType		: 'CSS',
+			/*
+			 * the width of the component
+			 */
 			width		: window.innerWidth,
+			/*
+			 * the height of the component
+			 */
 			height		: window.innerHeight,
+			/*
+			 * cameraType	= 'perspective' : the camera is first person view
+			 * cameraType	= 'obit'		: the camera is third person view
+			 */
 			cameraType		: 'perspective',
+			/*
+			 * in perspective mode, the position of camera, for X,Y,Z coordination
+			 */
 			cameraPerspectivePositionX		: 300,
 			cameraPerspectivePositionY		: 0,
 			cameraPerspectivePositionZ		: 0,
+			/*
+			 * in perspective mode, the angle of camera, for X,Y,Z coordination
+			 */
 			cameraPerspectiveAngleX		: 0,
 			cameraPerspectiveAngleY		: -90,
 			cameraPerspectiveAngleZ		: 0,
+			/*
+			 * in orbit mode, the position of camera, for X,Y,Z coordination
+			 */
 			cameraObitPositionX		: 0,
 			cameraObitPositionY		: 0,
 			cameraObitPositionZ		: 200,
+			/*
+			 * in orbit mode, the distance to camera, the bigger the number, the far
+			 * away to the camera
+			 */
 			cameraObitFrustmSize		: 600,
+			/*
+			 * strength to push all skill nodes away
+			 */
 			strengthPushAllAway		: -657,
+			/*
+			 * strength to pull all skill nodes to X coordination
+			 */
 			strengthPullToX		: 0.1,
+			/*
+			 * strength to pull all skill nodes to y coordination
+			 */
 			strengthPullToY		: 0.1,
+			/*
+			 * strength to pull all skill nodes to z coordination
+			 */
 			strengthPullToZ		: 0.1,
+			/*
+			 * strength to bounce all nodes away
+			 */
 			strengthToBounceOtherAway		: 0.78,
+			/*
+			 * this is the setting for show a skill node in CSS/HTML way
+			 */
 			textCSS		: (node) => {
 				return (
 					<div
 						style={{
-							color		: 'yellow',
-							fontSize		: 32 * (node.weight/10) + 'px'
+							color		: 'red',
+							fontSize		: 32 * (node.weight/10) + 'px',
+							background		: 'green',
+							opacity		: 0.3,
 						}}
 					>
 						{node.name}
 					</div>
 				)
 			},
+			/*
+			 * this is the setting for show a skill node in three.js d3 way
+			 */
 			textMesh		: (node, font) =>{
 				//WebGL text
 				const textGeometry = new THREE.TextGeometry( node.name, {
@@ -81,6 +147,11 @@ class Index extends React.Component<{},{}>{
 				})
 				return new THREE.Mesh(textGeometry, textMaterial)
 			},
+			/*
+			 * the skill data
+			 * 	name		:		the skill name
+			 * 	weight		: the weight for skill, range from 1 to 10
+			 */
 			data		: [
 				//{{{
 				{
