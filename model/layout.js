@@ -11,18 +11,23 @@ export function layout(
 	//at a time
 	isAnimated		: boolean,
 	linkDistance		: number,
+	strengthPushAllAway		: number,
+	strengthPullToX		: number,
+	strengthPullToY		: number,
+	strengthPullToZ		: number,
+	strengthToBounceOtherAway		: number,
 ){
 	const force		= d3.forceSimulation(nodes, 3)
 			.force('charge', 
 				d3.forceManyBody()
-					.strength(-500)
+					.strength(strengthPushAllAway)
 			)
 //			.force('center', d3.forceCenter())
-			.force('x', d3.forceX())
-			.force('y', d3.forceY())
-			.force('z', d3.forceZ())
+			.force('x', d3.forceX().strength(strengthPullToX))
+			.force('y', d3.forceY().strength(strengthPullToY))
+			.force('z', d3.forceZ().strength(strengthPullToZ))
 			.force('collision', d3.forceCollide(function(d){
-				return (linkDistance/2) * (d.weight/10) 
+				return (linkDistance * strengthToBounceOtherAway) * (d.weight/10) 
 			}))
 			.force('link', 
 				d3.forceLink(links)

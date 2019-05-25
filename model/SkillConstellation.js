@@ -14,7 +14,24 @@ const settingDefault		= {
 	backgroundColor		: 0xf0f0f0,
 	lineColor		: 0x000000,
 	lineDistance		: 80,
-	cameraType		: 'orbit'
+	cameraType		: 'orbit',
+	width		: 800,
+	height		: 600,
+	cameraPerspectivePositionX		: 300,
+	cameraPerspectivePositionY		: 0,
+	cameraPerspectivePositionZ		: 0,
+	cameraPerspectiveAngleX		: 0,
+	cameraPerspectiveAngleY		: -90,
+	cameraPerspectiveAngleZ		: 0,
+	cameraObitPositionX		: 0,
+	cameraObitPositionY		: 0,
+	cameraObitPositionZ		: 200,
+	cameraObitFrustmSize		: 800,
+	strengthPushAllAway		: -500,
+	strengthPullToX		: 0.1,
+	strengthPullToY		: 0.1,
+	strengthPullToZ		: 0.1,
+	strengthToBounceOtherAway		: 0.5,
 }
 
 export default class SkillConstellation{
@@ -141,6 +158,11 @@ export default class SkillConstellation{
 			links, 
 			this.setting.isAnimated,
 			this.setting.lineDistance,
+			this.setting.strengthPushAllAway,
+			this.setting.strengthPullToX,
+			this.setting.strengthPullToY,
+			this.setting.strengthPullToZ,
+			this.setting.strengthToBounceOtherAway,
 		)
 		/*
 		 * camera
@@ -148,7 +170,7 @@ export default class SkillConstellation{
 		this.initCamera()
 		this.sceneCSS		= new THREE.Scene()
 		this.rendererCSS		= new THREE.CSS3DRenderer()
-		this.rendererCSS.setSize(window.innerWidth, window.innerHeight)
+		this.rendererCSS.setSize(this.setting.width, this.setting.height)
 		this.rendererCSS.domElement.style.position		= 'absolute'
 		this.setting.container.appendChild(this.rendererCSS.domElement)
 		/*
@@ -158,7 +180,7 @@ export default class SkillConstellation{
 		this.sceneWebGL.background = new THREE.Color( 0xf0f0f0 );
 		this.rendererWebGL		= new THREE.WebGLRenderer()
 		this.rendererWebGL.setPixelRatio( window.devicePixelRatio );
-		this.rendererWebGL.setSize( window.innerWidth, window.innerHeight );
+		this.rendererWebGL.setSize( this.setting.width, this.setting.height);
 		this.setting.container.appendChild( this.rendererWebGL.domElement );
 		if(this.setting.backgroundPicture){
 			console.log('to load background picture')
@@ -182,31 +204,36 @@ export default class SkillConstellation{
 		 * for perspective camera, should move it away from camera
 		 */
 		if(this.setting.cameraType === 'perspective'){
-			const awayVector3		= new THREE.Vector3(300, 0, 0,)
+			const awayVector3		= new THREE.Vector3(
+				this.setting.cameraPerspectivePositionX,
+				this.setting.cameraPerspectivePositionY,
+				this.setting.cameraPerspectivePositionZ,
+			)
 			const awayEuler		= new THREE.Euler(
-				0,
-				-90 * THREE.Math.DEG2RAD, 
-				0,
+				this.setting.cameraPerspectiveAngleX * THREE.Math.DEG2RAD, 
+				this.setting.cameraPerspectiveAngleY * THREE.Math.DEG2RAD, 
+				this.setting.cameraPerspectiveAngleZ * THREE.Math.DEG2RAD, 
 			)
 			groupAllCSS.position.copy(awayVector3)
 			groupAllWebGL.position.copy(awayVector3)
 			groupAllCSS.rotation.copy(awayEuler)
 			groupAllWebGL.rotation.copy(awayEuler)
 		}
-
-		//helper
-		const axesHelper		= new THREE.AxesHelper(500)
-		this.sceneWebGL.add(axesHelper)
-		const cameraHelper		= new THREE.CameraHelper(this.camera)
-		this.sceneWebGL.add(cameraHelper)
-		var gridHelper = new THREE.GridHelper( 100, 10 );
-		this.sceneWebGL.add( gridHelper );
-		var radius = 100;
-		var radials = 160;
-		var circles = 8;
-		var divisions = 64;
-		var helper = new THREE.PolarGridHelper( radius, radials, circles, divisions );
-		this.sceneWebGL.add( helper );
+		/*
+		 * helper
+		 */
+//		const axesHelper		= new THREE.AxesHelper(500)
+//		this.sceneWebGL.add(axesHelper)
+//		const cameraHelper		= new THREE.CameraHelper(this.camera)
+//		this.sceneWebGL.add(cameraHelper)
+//		var gridHelper = new THREE.GridHelper( 100, 10 );
+//		this.sceneWebGL.add( gridHelper );
+//		var radius = 100;
+//		var radials = 160;
+//		var circles = 8;
+//		var divisions = 64;
+//		var helper = new THREE.PolarGridHelper( radius, radials, circles, divisions );
+//		this.sceneWebGL.add( helper );
 
 		//console.log('nodes:', nodes)
 		for(let node of this.nodes){
@@ -308,9 +335,9 @@ export default class SkillConstellation{
 	initCamera(){
 		if(this.setting.cameraType === 'orbit'){
 			//the camera & controller
-			var frustumSize = 800;
+			var frustumSize = this.setting.cameraObitFrustmSize;
 			//use this to make the coordination is a square 
-			var aspect = window.innerWidth / window.innerHeight;
+			var aspect = this.setting.width / this.setting.height;
 			this.camera = new THREE.OrthographicCamera( 
 				frustumSize * aspect / - 2, 
 				frustumSize * aspect / 2, 
@@ -319,12 +346,16 @@ export default class SkillConstellation{
 				1, 
 				1000 
 			);
-			this.camera.position.set(0, 0, 200)
+			this.camera.position.set(
+				this.setting.cameraObitPositionX,
+				this.setting.cameraObitPositionY,
+				this.setting.cameraObitPositionZ,
+			)
 			const controls		= new THREE.OrbitControls(this.camera)
 		}else{
 			this.camera = new THREE.PerspectiveCamera( 
 				75, 
-				window.innerWidth / window.innerHeight, 
+				this.setting.width / this.setting.height, 
 				1, 
 				1100 
 			);
