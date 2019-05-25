@@ -2,6 +2,7 @@
 import SkillConstellation from './SkillConstellation.js'
 import React		from 'react'
 import THREE		from '../three.js'
+import * as d3		from 'd3'
 
 /*
  * to mock three.js to let it run on Node/Jest env
@@ -87,6 +88,14 @@ describe('?', () => {
 				.then(() => {
 					done()
 				})
+		})
+	})
+
+	describe('?', () => {
+		it('?', () => {
+			const colors		= d3.scaleOrdinal(['red', 'green'])
+			console.log('color:', colors('a'))
+			console.log('color:', colors('b'))
 		})
 	})
 })

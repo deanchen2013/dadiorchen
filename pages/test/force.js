@@ -3,6 +3,9 @@ import React		from 'react'
 import SkillConstellation		from '../../model/SkillConstellation.js'
 import {layout, build}		from '../../model/layout.js'
 import THREE		from '../../three.js'
+import * as d3		from 'd3'
+
+const colors		= d3.scaleOrdinal(['red', 'green', 'yellow', 'orange', 'blue'])
 
 class Index extends React.Component<{},{}>{
 	skillConstellation		: any
@@ -116,10 +119,8 @@ class Index extends React.Component<{},{}>{
 				return (
 					<div
 						style={{
-							color		: 'red',
+							color		: colors(node.name),
 							fontSize		: 32 * (node.weight/10) + 'px',
-							background		: 'green',
-							opacity		: 0.3,
 						}}
 					>
 						{node.name}
