@@ -45,12 +45,12 @@ class Index extends React.Component<{},{}>{
 			cameraObitPositionX		: 0,
 			cameraObitPositionY		: 0,
 			cameraObitPositionZ		: 200,
-			cameraObitFrustmSize		: 500,
-			strengthPushAllAway		: -500,
+			cameraObitFrustmSize		: 600,
+			strengthPushAllAway		: -657,
 			strengthPullToX		: 0.1,
 			strengthPullToY		: 0.1,
 			strengthPullToZ		: 0.1,
-			strengthToBounceOtherAway		: 0.5,
+			strengthToBounceOtherAway		: 0.78,
 			textCSS		: (node) => {
 				return (
 					<div
@@ -125,6 +125,24 @@ class Index extends React.Component<{},{}>{
 							weight		: 5,
 						}
 					]
+				},{
+					name		: 'git',
+					weight		: 4,
+				},{
+					name		: 'TDD',
+					weight		: 8,
+					children		: [
+						{
+							name		: 'Trello',
+							weight		: 3,
+						},{
+							name		: 'Agile programming',
+							weight		: 5,
+						},{
+							name		: 'Pomodoro Technique',
+							weight		: 3,
+						}
+					],
 				}
 				//}}}
 			]
