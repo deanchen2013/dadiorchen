@@ -359,6 +359,9 @@ export default class SkillConstellation{
 				this.setting.cameraObitPositionZ,
 			)
 			this.controls		= new THREE.OrbitControls(this.camera)
+			//inertia
+			this.controls.enableDamping		= true
+			this.controls.dampingFactor		= 0.1
 			if(this.setting.isAutoRotated){
 				this.controls.autoRotate		= true
 				this.controls.autoRotateSpeed		= this.setting.autoRotationSpeed
@@ -523,7 +526,7 @@ export default class SkillConstellation{
 			this.camera.lookAt( this.camera.target );
 		}
 
-		if(this.setting.cameraType === 'orbit' && this.setting.isAutoRotated){
+		if(this.setting.cameraType === 'orbit' ){
 			this.controls.update()
 		}
 	}
