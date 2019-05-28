@@ -7,6 +7,8 @@ import Facebook		from '../component/Facebook.js'
 import Mouse		from '../component/Mouse.js'
 import * as d3		from 'd3'
 import Sector		from '../model/Sector.js'
+import '../i18n.js'
+import { Translation } from 'react-i18next'
 
 const isAnimated		= true
 
@@ -258,71 +260,55 @@ class Index extends React.Component<{},{}>{
 
 	render(){
 		return (
-			<div>
-				<div className='nav' >
-					<div className='logo' >
-						<span>Dadior</span>
-						<span
-							style={{
-								color		: 'rgb(253, 51, 51)',
-							}}
-						>chen</span>
-					</div>
-					<div className='nav-right' >
-						<div className='nav-item' >
-							<a target="_blank" href="https://twitter.com/dadiorchen">
-								<Twitter/>
-							</a>
-						</div>
-						<div className='nav-item' >
-							<a target='_blank' href='https://facebook.com/dadirochen'>
-								<Facebook/>
-							</a>
-						</div>
-					</div>
-				</div>
-				<div className='sector' id='sectorA' >
-					<p className='h1' ><span>do</span><span>the</span><span>right</span><span>things.</span></p>
-					<div className='tip' >
+				<Translation>
+					{
+						t =>
 							<div>
-								<span>scroll or drag your mouse to look around</span><span><Mouse/></span>
+								<div className='nav' >
+									<div className='logo' >
+										<span>Dadior</span>
+										<span
+											style={{
+												color		: 'rgb(253, 51, 51)',
+											}}
+										>chen</span>
+									</div>
+									<div className='nav-right' >
+										<div className='nav-item' >
+											<a target="_blank" href="https://twitter.com/dadiorchen">
+												<Twitter/>
+											</a>
+										</div>
+										<div className='nav-item' >
+											<a target='_blank' href='https://facebook.com/dadirochen'>
+												<Facebook/>
+											</a>
+										</div>
+									</div>
+								</div>
+								<div className='sector' id='sectorA' >
+									<p className='h1' >{t('slogon').split(' ').map(c => <span>{c}</span>)}</p>
+									<div className='tip' >
+											<div>
+												<span>scroll or drag your mouse to look around</span><span><Mouse/></span>
+											</div>
+									</div>
+								</div>
+								<div className='sector' id='sectorB' >
+									<p 
+										style={{
+											width		: 400,
+										}}
+										className='h1 top-right' >
+										{t('intro').split(' ').map(c => <span>{c}</span>)}
+									</p>
+								</div>
+								<div id='container' >
+									<div id='containerDOM' />
+								</div>
 							</div>
-					</div>
-				</div>
-				<div className='sector' id='sectorB' >
-					<p 
-						style={{
-							width		: 400,
-						}}
-						className='h1 top-right' >
-						<span>yes, this is me, I am a full stack developer, currently, I am focusing on the entire Javascript stack.</span>
-					</p>
-				</div>
-				<div id='container' >
-					{/*
-					<img
-						id='me'
-						style={{
-							position		: 'absolute',
-							height		: 350,
-						}}
-						src='/static/me.png'
-						/>
-					<div
-						id='slogon'
-						style={{
-							position		: 'absolute',
-							color		: 'white',
-							fontSize		: 32,
-							width		: 200,
-						}}
-					>
-						Hi, I am Chen, I just do right things.
-					</div>
-					*/}
-					<div id='containerDOM' />
-				</div>
-			</div>
+					}
+				</Translation>
 		)
 	}
 }

@@ -19,7 +19,7 @@ export default class Sector {
 			}else{
 				inRanges.push([sector.range[0], sector.range[1]])
 			}
-			console.log('inRanges:', inRanges)
+			//console.log('inRanges:', inRanges)
 			let isIn		= false
 			for(let inRange of inRanges){
 				//$FlowFixMe
@@ -33,6 +33,6 @@ export default class Sector {
 				sector.opacity		= 0
 			}
 		})
-		console.log('sectors:', this.sectors)
+		//console.log('sectors:', this.sectors)
 	}
 }
