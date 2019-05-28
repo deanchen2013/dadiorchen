@@ -1,10 +1,35 @@
 //@flow
 import React		from 'react'
 import THREE		from '../three.js'
+import '../style.css'
+import Twitter		from '../component/Twitter.js'
+import Facebook		from '../component/Facebook.js'
+import Mouse		from '../component/Mouse.js'
+import * as d3		from 'd3'
+import Sector		from '../model/Sector.js'
+
+const isAnimated		= true
+
+const sectors		= [
+	{
+		id		: 'sectorA',
+		range		: [-30, 30],
+		opacity		: 0,
+	},{
+		id		: 'sectorB',
+		range		: [45, 75],
+		opacity		: 0,
+	}
+]
+
+const sector		= new Sector(sectors)
 
 class Index extends React.Component<{},{}>{
 	constructor(props : any){
 		super(props)
+		//bind
+		////$FlowFixMe
+		this.refresh		= this.refresh.bind(this)
 	}
 
 	componentDidMount(){
@@ -16,16 +41,27 @@ class Index extends React.Component<{},{}>{
 	}
 
 	refresh(){
+		var thisRef		= this
 		var isShown
 		var boxMesh
 		var camera, scene, renderer, sceneDOM, rendererDOM;
 		var isUserInteracting = false,
 			onMouseDownMouseX = 0, onMouseDownMouseY = 0,
-			lon = 0, onMouseDownLon = 0,
-			lat = 0, onMouseDownLat = 0,
-			phi = 0, theta = 0;
+			//the degree from front to right, from 0 to 360
+			lon = 0, 
+			onMouseDownLon = 0,
+			lat = 0, 
+			onMouseDownLat = 0,
+			phi = 0, 
+			theta = 0;
 		init();
-		animate();
+		if(isAnimated){
+			animate();
+		}else{
+			setTimeout(() => {
+				requestAnimationFrame(update)
+			}, 500)
+		}
 		function init() {
 			var container, mesh;
 			container = document.getElementById( 'container' );
@@ -35,7 +71,7 @@ class Index extends React.Component<{},{}>{
 			var geometry = new THREE.SphereBufferGeometry( 500, 60, 40 );
 			// invert the geometry on the x-axis so that all of the faces point inward
 			geometry.scale( - 1, 1, 1 );
-			var texture = new THREE.TextureLoader().load( '/static/bg3.jpg' );
+			var texture = new THREE.TextureLoader().load( '/static/panglao2.jpg' );
 			var material = new THREE.MeshBasicMaterial( { map: texture } );
 			mesh = new THREE.Mesh( geometry, material );
 			scene.add( mesh );
@@ -50,15 +86,15 @@ class Index extends React.Component<{},{}>{
 			//boxMesh.rotation.y		= (Math.PI / 180) * 25
 			//scene.add(boxMesh)
 
-			//helper
-			const axesHelper		= new THREE.AxesHelper(500)
-			scene.add(axesHelper)
-			const cameraHelper		= new THREE.CameraHelper(camera)
-			scene.add(cameraHelper)
-			const polarGridHelper		= new THREE.PolarGridHelper()
-			scene.add(polarGridHelper)
-			const boxHelper		= new THREE.VertexNormalsHelper( boxMesh, 2, 0x00ff00, 1 );
-			//scene.add(boxHelper)
+//			//helper
+//			const axesHelper		= new THREE.AxesHelper(500)
+//			scene.add(axesHelper)
+//			const cameraHelper		= new THREE.CameraHelper(camera)
+//			scene.add(cameraHelper)
+//			const polarGridHelper		= new THREE.PolarGridHelper()
+//			scene.add(polarGridHelper)
+//			const boxHelper		= new THREE.VertexNormalsHelper( boxMesh, 2, 0x00ff00, 1 );
+//			//scene.add(boxHelper)
 
 			renderer = new THREE.WebGLRenderer();
 			renderer.setPixelRatio( window.devicePixelRatio );
@@ -66,38 +102,38 @@ class Index extends React.Component<{},{}>{
 			//$FlowFixMe
 			container.appendChild( renderer.domElement );
 
-			//for DOM
-			const containerDOM		= document.getElementById('containerDOM')
-			//clear
-			////$FlowFixMe
-			containerDOM.innerHTML		= ''
-			sceneDOM		= new THREE.Scene()
-			rendererDOM		= new THREE.CSS3DRenderer()
-			rendererDOM.setSize( window.innerWidth, window.innerHeight )
-			rendererDOM.domElement.style.position = 'absolute'
-			rendererDOM.domElement.style.top = 0
-			//$FlowFixMe
-			containerDOM.appendChild( rendererDOM.domElement );
-			//me
-			const meElement		= document.getElementById('me')
-			var object = new THREE.CSS3DObject(meElement);
-			object.position.copy( new THREE.Vector3(450, -50, -100) );
-			object.rotation.copy( new THREE.Euler(
-				0,
-				-90 * THREE.Math.DEG2RAD, 
-				0,
-			))
-			sceneDOM.add( object );
-			//slogon
-			const slogonElement		= document.getElementById('slogon')
-			const slogonObject		= new THREE.CSS3DObject(slogonElement)
-			slogonObject.position.copy( new THREE.Vector3(450, -50, 100) );
-			slogonObject.rotation.copy( new THREE.Euler(
-				0,
-				-90 * THREE.Math.DEG2RAD, 
-				0,
-			))
-			sceneDOM.add( slogonObject );
+//			//for DOM
+//			const containerDOM		= document.getElementById('containerDOM')
+//			//clear
+//			////$FlowFixMe
+//			containerDOM.innerHTML		= ''
+//			sceneDOM		= new THREE.Scene()
+//			rendererDOM		= new THREE.CSS3DRenderer()
+//			rendererDOM.setSize( window.innerWidth, window.innerHeight )
+//			rendererDOM.domElement.style.position = 'absolute'
+//			rendererDOM.domElement.style.top = 0
+//			//$FlowFixMe
+//			containerDOM.appendChild( rendererDOM.domElement );
+//			//me
+//			const meElement		= document.getElementById('me')
+//			var object = new THREE.CSS3DObject(meElement);
+//			object.position.copy( new THREE.Vector3(450, -50, -100) );
+//			object.rotation.copy( new THREE.Euler(
+//				0,
+//				-90 * THREE.Math.DEG2RAD, 
+//				0,
+//			))
+//			sceneDOM.add( object );
+//			//slogon
+//			const slogonElement		= document.getElementById('slogon')
+//			const slogonObject		= new THREE.CSS3DObject(slogonElement)
+//			slogonObject.position.copy( new THREE.Vector3(450, -50, 100) );
+//			slogonObject.rotation.copy( new THREE.Euler(
+//				0,
+//				-90 * THREE.Math.DEG2RAD, 
+//				0,
+//			))
+//			sceneDOM.add( slogonObject );
 
 			//$FlowFixMe
 			document.addEventListener( 'mousedown', onPointerStart, false );
@@ -177,17 +213,19 @@ class Index extends React.Component<{},{}>{
 		}
 		function animate() {
 			//slow down
-			setTimeout(() => {
+			//setTimeout(() => {
 				requestAnimationFrame( animate );
-			}, 1000)
+			//}, 1000)
 			update();
 		}
 		function update() {
-			console.log('update')
+			//console.log('update')
 			if ( isUserInteracting === false ) {
-				lon += 0.1;
+				//lon += 0.1;
 			}
 			lat = Math.max( - 85, Math.min( 85, lat ) );
+//			console.warn('lat:', lat)
+//			console.warn('lon:', lon)
 			phi = THREE.Math.degToRad( 90 - lat );
 			theta = THREE.Math.degToRad( lon );
 			camera.target.x = 500 * Math.sin( phi ) * Math.cos( theta );
@@ -199,7 +237,6 @@ class Index extends React.Component<{},{}>{
 				console.log('the camera position:', camera.position)
 				console.log('the camera rotation:', camera.rotation)
 				isShown		= true
-
 				console.log('the box:', boxMesh)
 			}
 			/*
@@ -207,39 +244,84 @@ class Index extends React.Component<{},{}>{
 				camera.position.copy( camera.target ).negate();
 				*/
 			renderer.render( scene, camera );
-			rendererDOM.render( sceneDOM, camera );
+			//rendererDOM.render( sceneDOM, camera );
+			/*
+			 * control the sectors
+			 */
+			sector.move(lon)
+			sectors.forEach(sector => {
+				d3.select(`#${sector.id}`)
+					.style('opacity', sector.opacity)
+			})
 		}
 	}
 
 	render(){
 		return (
-			<div id='container' >
-				<style global jsx>{`
-						body {
-							margin		: 0;
-						}
-					  `}
-				</style>
-				<img
-					id='me'
-					style={{
-						position		: 'absolute',
-						height		: 350,
-					}}
-					src='/static/me.png'
-					/>
-				<div
-					id='slogon'
-					style={{
-						position		: 'absolute',
-						color		: 'white',
-						fontSize		: 32,
-						width		: 200,
-					}}
-				>
-					Hi, I am Chen, I just do right things.
+			<div>
+				<div className='nav' >
+					<div className='logo' >
+						<span>Dadior</span>
+						<span
+							style={{
+								color		: 'rgb(253, 51, 51)',
+							}}
+						>chen</span>
+					</div>
+					<div className='nav-right' >
+						<div className='nav-item' >
+							<a target="_blank" href="https://twitter.com/dadiorchen">
+								<Twitter/>
+							</a>
+						</div>
+						<div className='nav-item' >
+							<a target='_blank' href='https://facebook.com/dadirochen'>
+								<Facebook/>
+							</a>
+						</div>
+					</div>
 				</div>
-				<div id='containerDOM' />
+				<div className='sector' id='sectorA' >
+					<p className='h1' ><span>do</span><span>the</span><span>right</span><span>things.</span></p>
+					<div className='tip' >
+							<div>
+								<span>scroll or drag your mouse to look around</span><span><Mouse/></span>
+							</div>
+					</div>
+				</div>
+				<div className='sector' id='sectorB' >
+					<p 
+						style={{
+							width		: 400,
+						}}
+						className='h1 top-right' >
+						<span>yes, this is me, I am a full stack developer, currently, I am focusing on the entire Javascript stack.</span>
+					</p>
+				</div>
+				<div id='container' >
+					{/*
+					<img
+						id='me'
+						style={{
+							position		: 'absolute',
+							height		: 350,
+						}}
+						src='/static/me.png'
+						/>
+					<div
+						id='slogon'
+						style={{
+							position		: 'absolute',
+							color		: 'white',
+							fontSize		: 32,
+							width		: 200,
+						}}
+					>
+						Hi, I am Chen, I just do right things.
+					</div>
+					*/}
+					<div id='containerDOM' />
+				</div>
 			</div>
 		)
 	}
