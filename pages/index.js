@@ -9,8 +9,10 @@ import * as d3		from 'd3'
 import Sector		from '../model/Sector.js'
 import '../i18n.js'
 import { Translation } from 'react-i18next'
+import Me		from '../model/Me.js'
 
 const isAnimated		= true
+const isHelperShown		= false
 
 const sectors		= [
 	{
@@ -43,6 +45,7 @@ class Index extends React.Component<{},{}>{
 	}
 
 	refresh(){
+		let me
 		var thisRef		= this
 		var isShown
 		var boxMesh
@@ -88,15 +91,33 @@ class Index extends React.Component<{},{}>{
 			//boxMesh.rotation.y		= (Math.PI / 180) * 25
 			//scene.add(boxMesh)
 
-//			//helper
-//			const axesHelper		= new THREE.AxesHelper(500)
-//			scene.add(axesHelper)
-//			const cameraHelper		= new THREE.CameraHelper(camera)
-//			scene.add(cameraHelper)
-//			const polarGridHelper		= new THREE.PolarGridHelper()
-//			scene.add(polarGridHelper)
-//			const boxHelper		= new THREE.VertexNormalsHelper( boxMesh, 2, 0x00ff00, 1 );
-//			//scene.add(boxHelper)
+			//helper
+			if(isHelperShown){
+				const axesHelper		= new THREE.AxesHelper(500)
+				scene.add(axesHelper)
+				const cameraHelper		= new THREE.CameraHelper(camera)
+				scene.add(cameraHelper)
+				const polarGridHelper		= new THREE.PolarGridHelper()
+				scene.add(polarGridHelper)
+				const boxHelper		= new THREE.VertexNormalsHelper( boxMesh, 2, 0x00ff00, 1 );
+				scene.add(boxHelper)
+				/*
+				 * Polar
+				 */
+				var radius = 10;
+				var radials = 16;
+				var circles = 8;
+				var divisions = 64;
+				var helper = new THREE.PolarGridHelper( radius, radials, circles, divisions );
+				scene.add( helper );
+				/*
+				 * grid
+				 */
+				var size = 10;
+				var divisions = 10;
+				var gridHelper = new THREE.GridHelper( size, divisions );
+				scene.add( gridHelper );
+			}
 
 			renderer = new THREE.WebGLRenderer();
 			renderer.setPixelRatio( window.devicePixelRatio );
@@ -104,28 +125,38 @@ class Index extends React.Component<{},{}>{
 			//$FlowFixMe
 			container.appendChild( renderer.domElement );
 
-//			//for DOM
-//			const containerDOM		= document.getElementById('containerDOM')
-//			//clear
-//			////$FlowFixMe
-//			containerDOM.innerHTML		= ''
-//			sceneDOM		= new THREE.Scene()
-//			rendererDOM		= new THREE.CSS3DRenderer()
-//			rendererDOM.setSize( window.innerWidth, window.innerHeight )
-//			rendererDOM.domElement.style.position = 'absolute'
-//			rendererDOM.domElement.style.top = 0
-//			//$FlowFixMe
-//			containerDOM.appendChild( rendererDOM.domElement );
-//			//me
-//			const meElement		= document.getElementById('me')
-//			var object = new THREE.CSS3DObject(meElement);
-//			object.position.copy( new THREE.Vector3(450, -50, -100) );
-//			object.rotation.copy( new THREE.Euler(
+			//for DOM
+			const containerDOM		= document.getElementById('containerDOM')
+			//clear
+			////$FlowFixMe
+			containerDOM.innerHTML		= ''
+			sceneDOM		= new THREE.Scene()
+			rendererDOM		= new THREE.CSS3DRenderer()
+			rendererDOM.setSize( window.innerWidth, window.innerHeight )
+			rendererDOM.domElement.style.position = 'absolute'
+			rendererDOM.domElement.style.top = 0
+			//$FlowFixMe
+			containerDOM.appendChild( rendererDOM.domElement );
+			/*
+			 * me
+			 */
+			me		= new Me(
+				document.getElementById('me'),
+				sceneDOM
+			)
+			me.object3D.position.copy( new THREE.Vector3(150, -350, 450) );
+			//me.object3D.position.copy( new THREE.Vector3(250, 0, 0) );
+			me.object3D.rotation.copy( new THREE.Euler(
+				0,
+				20 * THREE.Math.DEG2RAD, 
+				0,
+			))
+//			me.object3D.lookAt(
 //				0,
-//				-90 * THREE.Math.DEG2RAD, 
 //				0,
-//			))
-//			sceneDOM.add( object );
+//				0,
+//			)
+			//me.show()
 //			//slogon
 //			const slogonElement		= document.getElementById('slogon')
 //			const slogonObject		= new THREE.CSS3DObject(slogonElement)
@@ -241,12 +272,13 @@ class Index extends React.Component<{},{}>{
 				isShown		= true
 				console.log('the box:', boxMesh)
 			}
+			//me.object3D.rotateOnAxis(new THREE.Vector3(1, 0, 0), 0.1)
 			/*
 				// distortion
 				camera.position.copy( camera.target ).negate();
 				*/
 			renderer.render( scene, camera );
-			//rendererDOM.render( sceneDOM, camera );
+			rendererDOM.render( sceneDOM, camera );
 			/*
 			 * control the sectors
 			 */
@@ -255,6 +287,12 @@ class Index extends React.Component<{},{}>{
 				d3.select(`#${sector.id}`)
 					.style('opacity', sector.opacity)
 			})
+			/*
+			 * me
+			 */
+			if(lon > 50 && lon < 70){
+				me.show()
+			}
 		}
 	}
 
@@ -263,7 +301,25 @@ class Index extends React.Component<{},{}>{
 				<Translation>
 					{
 						t =>
-							<div>
+							<div
+								style={{
+									userSelect		: 'none',
+								}}
+							>
+								<div 
+									style={{
+										display		: 'none',
+									}}
+									className='materials' >
+									<img
+										 id='me'
+										 style={{
+														 position                : 'absolute',
+														 height          : 350,
+										 }}
+										 src='/static/me.png'
+										 />
+								</div>
 								<div className='nav' >
 									<div className='logo' >
 										<span>Dadior</span>
