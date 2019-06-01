@@ -68,4 +68,12 @@ export default class Me{
 			})
 		}
 	}
+
+	hide(){
+		d3.select(this.objectDOM).style('opacity', '0')
+	}
+
+	unHide(){
+		d3.select(this.objectDOM).style('opacity', '1')
+	}
 }

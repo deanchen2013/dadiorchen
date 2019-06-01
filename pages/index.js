@@ -21,7 +21,7 @@ import Location		from '../component/Location.js'
 console.trace		= console.debug
 log.setDefaultLevel('debug')
 const isAnimated		= true
-const isSlowDown		= true
+const isSlowDown		= false
 const isHelperShown		= false
 const colors		= d3.scaleOrdinal(d3.schemeCategory10)
 
@@ -263,6 +263,14 @@ class Index extends React.Component<Props,State>{
 					camera.target.y,
 					camera.target.z,
 				)
+				/*
+				 * hide me & box
+				 */
+				me.hide()
+				/*
+				 * box
+				 */
+				box.hide()
 				log.info(
 					'the origin camera \ntarget:%o, \nposition:%o, \nrotation:%o, \nthe skill object position:%o',
 					JSON.stringify(cameraTargetOrigin),
@@ -344,8 +352,8 @@ class Index extends React.Component<Props,State>{
 							skillConstellationObject.groupAllWebGL.position.z,
 						)
 						controls.autoRotate		= true
-				console.log('camera target:x:%d,y:%d,z:%d', camera.target.x, camera.target.y, camera.target.z, )
-				console.log('camera rotation:', camera.rotation)
+						console.log('camera target:x:%d,y:%d,z:%d', camera.target.x, camera.target.y, camera.target.z, )
+						console.log('camera rotation:', camera.rotation)
 						d3.select('.close-icon')
 							.on('click', function(){
 								console.log('click close')
@@ -435,6 +443,10 @@ class Index extends React.Component<Props,State>{
 											JSON.stringify(camera.rotation),
 											JSON.stringify(skillConstellationObject.groupAllWebGL.position),
 										)
+										//me
+										me.unHide()
+										//box
+										box.unHide()
 									})
 								d3.select('.close-icon')
 									.transition()
@@ -851,6 +863,7 @@ class Index extends React.Component<Props,State>{
 			 * control the sectors
 			 */
 			setInterval(() => {
+				log.debug('lon:', lon)
 				sector.move(lon)
 			}, 500)
 
@@ -967,9 +980,10 @@ class Index extends React.Component<Props,State>{
 			isUserInteracting = false;
 		}
 		function onDocumentMouseWheel( event ) {
-			var fov = camera.fov + event.deltaY * 0.05;
-			camera.fov = THREE.Math.clamp( fov, 10, 75 );
-			camera.updateProjectionMatrix();
+//			var fov = camera.fov + event.deltaY * 0.05;
+//			camera.fov = THREE.Math.clamp( fov, 10, 75 );
+//			camera.updateProjectionMatrix();
+			lon		+= event.deltaY * 0.05
 		}
 		function animate() {
 			//slow down

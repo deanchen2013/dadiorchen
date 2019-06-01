@@ -108,5 +108,13 @@ export default class Box {
 			this.group.rotation.y		+= 0.01
 		}
 	}
+
+	hide(){
+		d3.selectAll('.box-side').style('opacity', '0')
+	}
+
+	unHide(){
+		d3.selectAll('.box-side').style('opacity', '1')
+	}
 }
 

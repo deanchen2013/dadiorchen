@@ -2,6 +2,7 @@
 /*
  * The model for display the HTML content in different part of the panorama 
  */
+const log		= require('loglevel')
 
 export default class Sector {
 	sectors		: any
@@ -13,6 +14,13 @@ export default class Sector {
 	move(angle : number){
 		//mod the angle
 		angle		= angle % 360
+		/*
+		 * reverse to positive
+		 */
+		if(angle < 0){
+			angle		= 360 + angle
+		}
+		log.debug('angle:', angle)
 		this.sectors.forEach(sector => {
 			const inRanges		= []
 			if(sector.range[0] < 0){
