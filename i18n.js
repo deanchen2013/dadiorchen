@@ -6,13 +6,22 @@ import { initReactI18next } from "react-i18next";
 const resources = {
   en: {
     translation: {
-			'slogon'		: 'do the right things.',
-			'intro'		: 'yes, this is me, I am a full stack developer, currently, I am focusing on the entire Javascript stack.',
+			'slogon'		: 'hi, I\'m dadiorchen! I do right thing.',
+			'intro'		: 'yes, this is me, I am a full-stack developer.',
+			'skill'		: 'my skills, currently I focus on JS-stack',
+			'skill.button'		: 'check detail',
+			'work'		: 'I created Midinote, ',
+			'work.link'		: 'try it out',
     }
   },
   zh: {
     translation: {
-		'slogon'		: '嗨, 我是陈征',
+			'slogon'		: '嗨, 我是陈征, 我选择 做正确的事',
+			'intro'		: '对, 这就是我, 一个全栈开发者',
+			'skill'		: '我的技能, 目前专注于JS技术栈',
+			'skill.button'		: '查看细节',
+			'work'		: '我创造了Midinote, ',
+			'work.link'		: '试用',
     }
   }
 };

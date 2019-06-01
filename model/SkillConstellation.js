@@ -5,6 +5,7 @@
 import ReactDOM		from 'react-dom'
 import {build, layout}		from './layout.js'
 import THREE		from '../three.js'
+import SkillConstellationObject		from './SkillConstellationObject.js'
 
 const settingDefault		= {
 	isAnimated		: false,
@@ -41,14 +42,7 @@ export default class SkillConstellation{
 	//setting
 	setting		: any
 
-	//the nodes of every skill 
-	nodes		: any
-
-	//the links between two skill nodes
-	links		: any
-
-	//the d3 force for layout the nodes/links
-	force		: any
+	skillConstellationObject		: any
 
 	sceneCSS		: any
 
@@ -109,6 +103,7 @@ export default class SkillConstellation{
 		)
 		this.setting		= setting
 		this.isUserInteracting		= false
+		this.skillConstellationObject		= new SkillConstellationObject(setting)
 	}
 
 	/*
@@ -126,49 +121,7 @@ export default class SkillConstellation{
 	 * this is an async fn
 	 */
 	async init(){
-		//to build data
-		const {nodes, links}		= build(this.setting.data)
-		this.nodes		= nodes
-		this.links		= links
-		let orbitNodes		= 0
-		this.nodes.forEach(node => {
-			if(node.level === 0){
-				orbitNodes++
-				if(orbitNodes === 1){
-					//$FlowFixMe
-					node.fz		= 0
-				}else if(orbitNodes > 1 && orbitNodes <= 8){
-					//$FlowFixMe
-					node.fz		= - this.setting.lineDistance
-				}else if(orbitNodes > 8 && orbitNodes <= 27){
-					//$FlowFixMe
-					node.fz		= - this.setting.lineDistance * 2
-				}else if(orbitNodes > 27 && orbitNodes <= 64){
-					//$FlowFixMe
-					node.fz		= - this.setting.lineDistance * 3
-				}else if(orbitNodes > 64 ){
-					//$FlowFixMe
-					node.fz		= - this.setting.lineDistance * 4
-				}
-			}
-		})
-		//fix the 0 node
-		////$FlowFixMe
-//		nodes[0].fx		= 0
-//		//$FlowFixMe
-//		nodes[0].fy		= 0
-		//$FlowFixMe
-		this.force		= layout(
-			nodes, 
-			links, 
-			this.setting.isAnimated,
-			this.setting.lineDistance,
-			this.setting.strengthPushAllAway,
-			this.setting.strengthPullToX,
-			this.setting.strengthPullToY,
-			this.setting.strengthPullToZ,
-			this.setting.strengthToBounceOtherAway,
-		)
+		await this.skillConstellationObject.init()
 		/*
 		 * camera
 		 */
@@ -199,14 +152,8 @@ export default class SkillConstellation{
 		}else{
 			this.sceneWebGL.background		= new THREE.Color(this.setting.backgroundColor)
 		}
-		/*
-		 * Group All, to put all the stuff in it, because, maybe I will translate
-		 * all the node to some place
-		 */
-		const groupAllCSS		= new THREE.Group()
-		const groupAllWebGL		= new THREE.Group()
-		this.sceneCSS.add(groupAllCSS)
-		this.sceneWebGL.add(groupAllWebGL)
+		this.sceneCSS.add(this.skillConstellationObject.groupAllCSS)
+		this.sceneWebGL.add(this.skillConstellationObject.groupAllWebGL)
 		/*
 		 * for perspective camera, should move it away from camera
 		 */
@@ -221,10 +168,10 @@ export default class SkillConstellation{
 				this.setting.cameraPerspectiveAngleY * THREE.Math.DEG2RAD, 
 				this.setting.cameraPerspectiveAngleZ * THREE.Math.DEG2RAD, 
 			)
-			groupAllCSS.position.copy(awayVector3)
-			groupAllWebGL.position.copy(awayVector3)
-			groupAllCSS.rotation.copy(awayEuler)
-			groupAllWebGL.rotation.copy(awayEuler)
+			this.skillConstellationObject.groupAllCSS.position.copy(awayVector3)
+			this.skillConstellationObject.groupAllWebGL.position.copy(awayVector3)
+			this.skillConstellationObject.groupAllCSS.rotation.copy(awayEuler)
+			this.skillConstellationObject.groupAllWebGL.rotation.copy(awayEuler)
 		}
 		/*
 		 * helper
@@ -243,100 +190,6 @@ export default class SkillConstellation{
 //		this.sceneWebGL.add( helper );
 
 		//console.log('nodes:', nodes)
-		for(let node of this.nodes){
-			//this is the first time
-			if(this.setting.textType === 'CSS'){
-	//						const elementDOM		= document.createElement('div')
-	//						elementDOM.className		= 'dot'
-	//						const object3D		= new THREE.CSS3DObject(elementDOM)
-	//						object3D.position.set(
-	//							node.x,
-	//							node.y,
-	//							node.z
-	//						)
-				//the text label
-				const elementDOM		= document.createElement('div')
-				const textElement		= this.setting.textCSS(node)
-				await new Promise(resolve => {
-					ReactDOM.render(
-						textElement,
-						elementDOM,
-						resolve(true)
-					)
-				})
-				console.log('textElement:', textElement)
-				console.log('elementDOM:', elementDOM)
-				const textObject3D		= new THREE.CSS3DObject(elementDOM)
-				textObject3D.position.set(
-					node.x,
-					node.y,
-					node.z
-				)
-	//						scene.add(object3D)
-				groupAllCSS.add(textObject3D)
-				//add ref to node
-				node.object		= textObject3D
-			}else{
-				//load font
-				var loader = new THREE.FontLoader();
-				console.log('begin load...')
-				const font		= await new Promise(resolve => {
-					loader.load( '/static/fonts/helvetiker_regular.typeface.json', function ( font ) {
-						console.log('load finish!')
-						resolve( font );
-					} );
-				})
-				//set the position of textMesh to center of itself
-				const textMesh		= this.setting.textMesh(node, font)
-				const box3		= new THREE.Box3().setFromObject(textMesh)	
-				const target		= new THREE.Vector3()
-				box3.getSize(target)
-				//console.log('text size:', target)
-				textMesh.position.set(
-					-target.x / 2,
-					-target.y / 2,
-					0
-				)
-				const group		= new THREE.Group()
-				group.add(textMesh)
-				group.position.set(
-					node.x,
-					node.y,
-					node.z
-				)
-				groupAllWebGL.add(group)
-				//add ref to node
-				node.object		= group
-				//console.log('textMesh:', textMesh)
-	//				//help
-	//				var box = new THREE.BoxHelper( textMesh, 0x000000 );
-	//				sceneWebGL.add( box );
-			}
-		}
-
-		for(let link of this.links){
-				//line/link
-				const lineMaterial		= new THREE.LineBasicMaterial(
-					{
-						color		: this.setting.lineColor,
-						linewidth		: 5,
-					}
-				)
-				const lineGeometry		= new THREE.Geometry()
-				lineGeometry.vertices.push(new THREE.Vector3(
-					link.source.x,
-					link.source.y,
-					link.source.z
-				))
-				lineGeometry.vertices.push(new THREE.Vector3(
-					link.target.x,
-					link.target.y,
-					link.target.z
-				))
-				const line		= new THREE.Line(lineGeometry, lineMaterial)
-				groupAllWebGL.add(line)
-				link.object		= line
-		}
 	}
 
 	initCamera(){
@@ -463,56 +316,35 @@ export default class SkillConstellation{
 	 * for nodes & links, if not, update the position of them
 	 */
 	update(){
-		//to create DOM, and amount to scene
-		this.nodes.forEach((node :any)=> {
+		this.skillConstellationObject.update()
+
+		/*
+		 * rotate the text to towards the camera
+		 */
+		this.skillConstellationObject.nodes.forEach((node :any)=> {
 			if(node.object){
-				//existed, just update position
-				node.object.position.set(
-					node.x,
-					node.y,
-					node.z
-				)
-				/*
-				 * rotate the text to towards the camera
-				 */
-				if(this.setting.cameraType === 'orbit' && this.setting.isTextDirectionFixed){
-//					node.object.lookAt(
-//						this.camera.position.x,
-//						node.object.position.y,
-//						this.camera.position.z,
-//					)
+				if(
+					this.setting.cameraType === 'orbit' && 
+					this.setting.isTextDirectionFixed
+				){
+		//					node.object.lookAt(
+		//						this.camera.position.x,
+		//						node.object.position.y,
+		//						this.camera.position.z,
+		//					)
 					/*
 					 * node rotate along the Y axes with angle a, a === camera angle a 
 					 * alone Y
 					 */
 					node.object.rotation.set(
-						this.camera.rotation.x,
-						this.camera.rotation.y,
-						this.camera.rotation.z,
-					)
+							this.camera.rotation.x,
+							this.camera.rotation.y,
+							this.camera.rotation.z,
+						)
 				}
 			}else{
 			}
 		})
-		//console.log('links:', links)
-		this.links.forEach((link : any) => {
-			if(link.object){
-				//important! Need to inform engine to update the line
-				link.object.geometry.verticesNeedUpdate		= true
-				link.object.geometry.vertices[0].set(
-					link.source.x,
-					link.source.y,
-					link.source.z
-				)
-				link.object.geometry.vertices[1].set(
-					link.target.x,
-					link.target.y,
-					link.target.z
-				)
-			}else{
-			}
-		})
-
 		if(this.setting.cameraType === 'perspective'){
 			if ( this.isUserInteracting === false ) {
 				//this.lon += 0.1;

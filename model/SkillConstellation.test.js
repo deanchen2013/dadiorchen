@@ -66,7 +66,9 @@ describe('?', () => {
 				 * space
 				 */
 				//console.log(skillConstellation.nodes)
-				expect(skillConstellation.nodes[0].object).toBeDefined()
+				expect(
+					skillConstellation.skillConstellationObject.nodes[0].object
+				).toBeDefined()
 			})
 			.then(() => {
 				done()

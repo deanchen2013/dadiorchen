@@ -1,5 +1,7 @@
 body {
 	margin		: 0;
+	overscroll-behavior-y: none;
+	overscroll-behavior-x: none;
 }
 
 
@@ -253,7 +255,7 @@ body {
 }
 
 .nav {
-	background: linear-gradient(to bottom,rgba(0,0,0,.9) 0%,rgba(0,0,0,0) 90%);
+	background: linear-gradient(to bottom,rgba(0,0,0,.7) 0%,rgba(0,0,0,0) 80%);
 	overflow: hidden;
 	padding: 2em 0 4em;
 	position		: absolute;
@@ -261,6 +263,7 @@ body {
 	display		: flex;
 	flex-direction: row;
 	justify-content: space-between;
+	top		: 0px;
 }
 
 .nav-right {
@@ -270,6 +273,7 @@ body {
 
 .nav-item {
 	margin		: 10px;
+	z-index		: 1000;
 }
 
 .nav-item svg{
@@ -290,25 +294,52 @@ body {
 }
 
 .sector{
+	visibility		: hidden;
+	opacity		: 0;
+	position		: absolute;
+	top		: 0px;
+	width		: 100%;
+	height		: 100vh;
+	display		: flex;
 	transition		: all 0.5s ease;
+	pointer-events		: none;
 }
 
+
 .h1{
-	position		: absolute;
-	margin-left: 60%;
-	margin-top: 60vh;
-	width: 250px;
 	font-size: 44px;
 	font-family		: "Khand",sans-serif;
-	line-height		: 62px;
+	line-height		: 32px;
 	display		: flex;
 	flex-wrap		: wrap;
+	pointer-events		: auto;
 }
 
 .h1 span{
 	background-color		: rgb(253, 51, 51);
 	color		: white;
 	padding		: 5px;
+	vertical-align: middle;
+	height		: 48px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.h1 .link{
+	background-color		: rgb(253, 51, 51);
+	color		: white;
+	padding		: 5px;
+	vertical-align: middle;
+	height		: 48px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	cursor		: pointer;
+	text-decoration		: underline;
+}
+
+.multiline {
 }
 
 .top-right {
@@ -316,9 +347,37 @@ body {
 	margin-top		: 15vh;
 }
 
+.top-left {
+	margin-left		: 15%;
+	margin-top		: 15vh;
+	margin-bottom: auto;
+}
+
+.bottom-left {
+	margin-left		: 10%;
+	margin-top		: 80vh;
+}
+
+.bottom-right {
+	width: 330px;
+	margin-left: 60%;
+	margin-top: 60vh;
+	margin-bottom: auto;
+}
+
+.bottom {
+	margin-top		: 80vh;
+	margin-left		: auto;
+	margin-right	: auto;
+	width		: 100%;
+	text-align		: center;
+	display		: flex;
+	justify-content		: center;
+}
+
 .tip{
 	position		: absolute;
-	top		: 92%;
+	top		: 87%;
 	width		: 100%;
 	display		: flex;
 	justify-content: center;
@@ -336,4 +395,159 @@ body {
 
 .tip svg{
 	fill: #c7c7c7;
+	animation		: shake 1s ease-in-out 5; 
+}
+
+@keyframes shake{
+	0% { transform: rotateZ(0deg)}
+	25% { transform: rotateZ(15deg)}
+	50% { transform: rotateZ(0deg)}
+	100% { transform: rotateZ(-15deg)}
+}
+
+.close-icon {
+	position		: absolute;
+	right		: 50px;
+	top		: 100px;
+	width		: 24px;
+	opacity		: 0;
+	visibility		: none;
+	cursor		: pointer;
+	transition		: all 0.5s ease;
+}
+
+.close-icon svg{
+	fill		: white;
+}
+
+.skill {
+	border: 1px solid rgba(127,255,255,0.25);
+	text-align: center;
+	cursor: default;
+	background-color: rgba(0, 127, 127, 0.567);
+	color: rgba(255,255,255,0.9);
+	font-family: "Roboto",sans-serif;
+	padding		: 5%;
+	border-radius		: 3px;
+}
+
+.ball {
+ display: block;
+ background: black;
+ border-radius: 50%;
+ height: 300px;
+ width: 300px;
+ margin: 0;
+ background: radial-gradient(circle at 100px 100px, #5cabff, #000);
+}
+
+.box-side {
+	cursor		: pointer;
+}
+
+.arrow {
+	position		: absolute;
+	top		: 25%;
+	opacity		: 0;
+	transition		: all 0.5s ease;
+	cursor		: pointer;
+	z-index		: 1000;
+}
+
+.arrow svg{
+	width		: 50px;
+	fill		: rgb(118, 118, 118);
+}
+
+.arrow svg:hover{
+	fill		: rgb(218, 218, 218);
+}
+
+.arrow.left{
+	left		: 10px;
+}
+
+.arrow.right{
+	right		: 10px;
+}
+
+/*
+.slider {
+	position		: absolute;
+	top		: 0px;
+	left		: 0px;
+	width		: 100%;
+	height		: 100%;
+	background		: url('/static/spance.png');
+}
+
+.slider-inner  {
+	padding-top		: 20%;
+	padding-bottom		: 20%;
+	display		: flex;
+	flex-direction		: row;
+}
+
+.arrow {
+	width		: 40px;
+}
+
+.arrow svg{
+	width		: 40px;
+	fill		: gray;
+}
+*/
+
+.select-language	{
+	position		: absolute;
+}
+
+.footer {
+	position		: absolute;
+	bottom		: 5px;
+	font-size		: 12px;
+	color		: white;
+	font-family: Roboto, sans-serif;
+	margin-left		: 10px;
+	z-index		: 1000;
+}
+
+.footer svg {
+	fill		: white;
+	width		: 20px;
+	height		: 20px;
+	margin-left		: 5px;
+	margin-top		: 15px;
+}
+
+.button {
+	border: 2px #fe7b01 solid;
+	color: #fff;
+	text-decoration: none;
+	text-transform: uppercase;
+	padding		: 0 10px;
+	font-weight: 700;
+	letter-spacing: .03em;
+	display: flex;
+	margin-left		: 10px;
+	margin-bottom: auto;
+	transition		: all 0.1s ease;
+	cursor		: pointer;
+}
+
+.button:hover{
+	border: 2px white solid;
+}
+
+.button span {
+	font-family: "Roboto",sans-serif;
+	background		: none;
+	font-size: 24px;
+}
+
+.center		{
+	width		: 100%;
+	display		: flex;
+	flex-direction		: row;
+	justify-content		: center;
 }

@@ -35,7 +35,8 @@ export function layout(
 			)
 			.stop()
 	if(isAnimated){
-		force.restart()
+		//start manually
+		//force.restart()
 	}else{
 		force.tick(200)
 	}

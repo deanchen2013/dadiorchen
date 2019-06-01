@@ -11,6 +11,8 @@ export default class Sector {
 	}
 
 	move(angle : number){
+		//mod the angle
+		angle		= angle % 360
 		this.sectors.forEach(sector => {
 			const inRanges		= []
 			if(sector.range[0] < 0){
@@ -27,11 +29,12 @@ export default class Sector {
 					isIn		= true
 				}
 			}
-			if(isIn){
-				sector.opacity		= 1
-			}else{
-				sector.opacity		= 0
+			if(isIn === false && sector.isShown === true){
+				sector.hide()
+			}else if(isIn === true && sector.isShown === false){
+				sector.show()
 			}
+			sector.isShown		= isIn
 		})
 		//console.log('sectors:', this.sectors)
 	}
