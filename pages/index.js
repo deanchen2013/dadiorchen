@@ -518,6 +518,15 @@ class Index extends React.Component<Props,State>{
 									},{
 										name		: 'Jest',
 										weight		: 8,
+										children		: [
+											{
+												name		: 'Enzyme',
+												weight		: 3,
+											},{
+												name		: 'Storybook',
+												weight		: 2,
+											}
+										],
 									},{
 										name		: 'Next.js',
 										weight		: 3,
@@ -568,14 +577,14 @@ class Index extends React.Component<Props,State>{
 							}
 						],
 					},{
-						name		: 'Agility',
+						name		: i18n.t('Agility'),
 						weight		: 6,
 						children		: [
 							{
 								name		: 'Trello',
-								weight		: 3,
+								weight		: 2,
 							},{
-								name		: 'Pomodoro Technique',
+								name		: i18n.t('Pomodoro Technique'),
 								weight		: 4,
 							}
 						],
@@ -585,7 +594,7 @@ class Index extends React.Component<Props,State>{
 						children		: [
 							{
 								name		: 'MySQL',
-								weight		: 4,
+								weight		: 3,
 							},{
 								name		: 'Redis',
 								weight		: 4,
@@ -598,11 +607,11 @@ class Index extends React.Component<Props,State>{
 							}
 						],
 					},{
-						name		: 'TDD',
+						name		: i18n.t('TDD'),
 						weight		: 9,
 						children		: [
 							{
-								name		: 'Object Oriented',
+								name		: i18n.t('Object Oriented Programing'),
 								weight		: 6,
 							},
 						],
@@ -618,7 +627,7 @@ class Index extends React.Component<Props,State>{
 								weight		: 4,
 							},{
 								name		: 'VIM',
-								weight		: 6,
+								weight		: 7,
 							},{
 								name		: 'Nginx',
 								weight		: 5,
@@ -640,11 +649,11 @@ class Index extends React.Component<Props,State>{
 							}
 						]
 					},{
-						name		: 'Chinese',
+						name		: i18n.t('Chinese'),
 						weight		: 3,
 						children		: [
 							{
-								name		: 'English',
+								name		: i18n.t('English'),
 								weight		: 3,
 							}
 						]

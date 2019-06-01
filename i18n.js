@@ -22,6 +22,12 @@ const resources = {
 			'skill.button'		: '查看细节',
 			'work'		: '我创造了Midinote, ',
 			'work.link'		: '试用',
+			'Agility'		: '敏捷方法',
+			'Pomodoro Technique'		: '番茄工作法',
+			'TDD'		: '测试驱动开发',
+			'Object Oriented Programing'		: '面向对象编程',
+			'Chinese'		: '中文',
+			'English'		: '英文',
     }
   }
 };
