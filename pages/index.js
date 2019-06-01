@@ -503,64 +503,151 @@ class Index extends React.Component<Props,State>{
 					//{{{
 					{
 						name		: 'Javascript',
-						weight		: 8,
+						weight		: 10,
 						children		: [
 							{
 								name		: 'React',
-								weight		: 8,
+								weight		: 9,
 								children		: [
 									{
 										name		: 'Redux',
 										weight		: 3,
 									},{
 										name		: 'Flow',
-										weight		: 3,
+										weight		: 4,
 									},{
 										name		: 'Jest',
-										weight		: 5,
+										weight		: 8,
 									},{
 										name		: 'Next.js',
+										weight		: 3,
+									},{
+										name		: 'Draft.js',
 										weight		: 3,
 									}
 								],
 							},{
 								name		: 'D3',
-								weight		: 6,
+								weight		: 5,
 							},{
 								name		: 'Three.js',
 								weight		: 3,
 							},{
 								name		: 'Node.js',
 								weight		: 6,
+								children		: [
+									{
+										name		: 'Express',
+										weight		: 4,
+									}
+								]
 							}
 						],
 					},{
 						name		: 'Java',
-						weight		: 6,
+						weight		: 8,
 						children		: [
 							{
 								name		: 'spring',
-								weight		: 5,
-							}
+								weight		: 8,
+							},{
+								name		: 'Lucene',
+								weight		: 3,
+							},{
+								name		: 'Hibernate',
+								weight		: 3,
+							},
 						]
 					},{
-						name		: 'git',
+						name		: 'Git',
 						weight		: 4,
+						children	: [
+							{
+								name		: 'Github',
+								weight		: 4,
+							}
+						],
 					},{
-						name		: 'TDD',
-						weight		: 8,
+						name		: 'Agility',
+						weight		: 6,
 						children		: [
 							{
 								name		: 'Trello',
 								weight		: 3,
 							},{
-								name		: 'Agile programming',
+								name		: 'Pomodoro Technique',
+								weight		: 4,
+							}
+						],
+					},{
+						name		: 'CouchDB',
+						weight		: 6,
+						children		: [
+							{
+								name		: 'MySQL',
+								weight		: 4,
+							},{
+								name		: 'Redis',
+								weight		: 4,
+							},{
+								name		: 'MongoDB',
 								weight		: 5,
 							},{
-								name		: 'Pomodoro Technique',
+								name		: 'Oracle',
 								weight		: 3,
 							}
 						],
+					},{
+						name		: 'TDD',
+						weight		: 9,
+						children		: [
+							{
+								name		: 'Object Oriented',
+								weight		: 6,
+							},
+						],
+					},{
+						name		: 'Linux',
+						weight		: 6,
+						children		: [
+							{
+								name		: 'Windows',
+								weight		: 3,
+							},{
+								name		: 'shell programing',
+								weight		: 4,
+							},{
+								name		: 'VIM',
+								weight		: 6,
+							},{
+								name		: 'Nginx',
+								weight		: 5,
+							}
+						]
+					},{
+						name		: 'AWS',
+						weight		: 4,
+						children		: [
+							{
+								name		: 'ec2',
+								weight		: 4,
+							},{
+								name		: 's3',
+								weight		: 2,
+							},{
+								name		: 'Lambda',
+								weight		: 2,
+							}
+						]
+					},{
+						name		: 'Chinese',
+						weight		: 3,
+						children		: [
+							{
+								name		: 'English',
+								weight		: 3,
+							}
+						]
 					}
 					//}}}
 				]
@@ -570,8 +657,8 @@ class Index extends React.Component<Props,State>{
 			sceneDOM.add(skillConstellationObject.groupAllCSS)
 			scene.add(skillConstellationObject.groupAllWebGL)
 			const awayVector3		= new THREE.Vector3(
-				-450,
-				100,
+				-500,
+				50,
 				0,
 			)
 			const awayEuler		= new THREE.Euler(
