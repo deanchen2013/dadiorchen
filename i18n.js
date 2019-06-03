@@ -12,6 +12,8 @@ const resources = {
 			'skill.button'		: 'check detail',
 			'work'		: 'I created Midinote, ',
 			'work.link'		: 'try it out',
+			'tip'		: 'scroll or drag your mouse to look around',
+			'tip4picture'		: 'this beautiful place is at Bohol, Philippine, I have been there for my holiday.',
     }
   },
   zh: {
@@ -28,6 +30,8 @@ const resources = {
 			'Object Oriented Programing'		: '面向对象编程',
 			'Chinese'		: '中文',
 			'English'		: '英文',
+			'tip'		: '请滚动或者拖拽鼠标来查看内容',
+			'tip4picture'		: '图片是菲律宾薄荷岛,在那儿我度过了一个美好假期',
     }
   }
 };

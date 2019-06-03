@@ -20,7 +20,7 @@ export default class Sector {
 		if(angle < 0){
 			angle		= 360 + angle
 		}
-		log.debug('angle:', angle)
+		//log.debug('angle:', angle)
 		this.sectors.forEach(sector => {
 			const inRanges		= []
 			if(sector.range[0] < 0){
