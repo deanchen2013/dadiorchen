@@ -33,6 +33,7 @@ export default class Me{
 		this.object3DInner.rotation.x		= -90 * THREE.Math.DEG2RAD, 
 		this.object3D		= new THREE.Group()
 		this.object3D.add(this.object3DInner)
+		this.object3D.visible		= false
 		scene.add( this.object3D );
 	}
 
@@ -75,5 +76,10 @@ export default class Me{
 
 	unHide(){
 		d3.select(this.objectDOM).style('opacity', '1')
+	}
+
+	visible(visible	: boolean){
+		this.object3D.visible		= visible
+		d3.select(this.objectDOM).style('display', visible? 'block':'none')
 	}
 }

@@ -160,23 +160,32 @@ class Index extends React.Component<Props,State>{
 			// invert the geometry on the x-axis so that all of the faces point inward
 			geometry.scale( - 1, 1, 1 );
 			var texture = new THREE.TextureLoader().load(
-				'/static/pic2.jpg',
+				'/static/pic1small.jpg',
 				async () => {
-					log.warn('loaded!!!')
 					//{{{
-
+					log.warn('loaded!!!')
 					material = new THREE.MeshBasicMaterial( { map: texture } );
 					material.transparent		= true
 					mesh = new THREE.Mesh( geometry, material );
 					scene.add( mesh );
-
+					/*
+					 * after small pic was shown, load big pic
+					 */
+					var textureBig		= new THREE.TextureLoader().load(
+						'static/pic2.jpg',
+						async () => {
+							log.info('big pic loaded')
+							material.map		= textureBig
+							material.needsUpdate		= true
+						}
+					)
 					//a box
-					const boxGeometry		= new THREE.BoxGeometry(20, 80, 20)
-					const boxMaterial		= new THREE.MeshBasicMaterial({color:'0x0000ff'})
-					boxMesh		= new THREE.Mesh(boxGeometry, boxMaterial)
-					boxMesh.position.x		= 100
-					boxMesh.position.z		= -50
-					boxMesh.position.y		= -20
+//					const boxGeometry		= new THREE.BoxGeometry(20, 80, 20)
+//					const boxMaterial		= new THREE.MeshBasicMaterial({color:'0x0000ff'})
+//					boxMesh		= new THREE.Mesh(boxGeometry, boxMaterial)
+//					boxMesh.position.x		= 100
+//					boxMesh.position.z		= -50
+//					boxMesh.position.y		= -20
 					//boxMesh.rotation.y		= (Math.PI / 180) * 25
 					//scene.add(boxMesh)
 
@@ -473,7 +482,6 @@ class Index extends React.Component<Props,State>{
 					}
 					//$FlowFixMe
 					thisRef.showSkill		= handleClick
-					debugger
 					const setting		= {
 						isAnimated		: true,
 						lineColor		: 0xffffff,
@@ -925,10 +933,12 @@ class Index extends React.Component<Props,State>{
 									d3.select('#sectorB')
 										.style('visibility', 'visible')
 										.style('opacity', '1')
+									me.visible(true)
 									me.show()
 								}
 								//$FlowFixMe
 								sector.hide		= () => {
+									me.visible(false)
 									d3.select('#sectorB')
 										.style('visibility', 'hidden')
 										.style('opacity', '0')
@@ -941,10 +951,12 @@ class Index extends React.Component<Props,State>{
 									d3.select('#sectorC')
 										.style('visibility', 'visible')
 										.style('opacity', '1')
+									skillConstellationObject.visible(true)
 									skillConstellationObject.explode()
 								}
 								//$FlowFixMe
 								sector.hide		= () => {
+									skillConstellationObject.visible(false)
 									d3.select('#sectorC')
 										.style('visibility', 'hidden')
 										.style('opacity', '0')
@@ -957,10 +969,12 @@ class Index extends React.Component<Props,State>{
 									d3.select('#sectorD')
 										.style('visibility', 'visible')
 										.style('opacity', '1')
+									box.visible(true)
 									box.explode()
 								}
 								//$FlowFixMe
 								sector.hide		= () => {
+									box.visible(false)
 									d3.select('#sectorD')
 										.style('visibility', 'hidden')
 										.style('opacity', '0')
@@ -1128,52 +1142,50 @@ class Index extends React.Component<Props,State>{
 					//lon += 0.1;
 				}
 				lat = Math.max( - 85, Math.min( 85, lat ) );
-	//			console.warn('lat:', lat)
-	//			console.warn('lon:', lon)
 				phi = THREE.Math.degToRad( 90 - lat );
 				theta = THREE.Math.degToRad( lon );
 				camera.target.x = 500 * Math.sin( phi ) * Math.cos( theta );
 				camera.target.y = 500 * Math.cos( phi );
 				camera.target.z = 500 * Math.sin( phi ) * Math.sin( theta );
 				camera.lookAt( camera.target );
-				log.trace('update camera target:', camera.target)
 				if(!isShown){
-					console.log('the camera:', camera.toJSON())
-					console.log('the camera position:', camera.position)
-					console.log('the camera rotation:', camera.rotation)
 					isShown		= true
-					console.log('the box:', boxMesh)
 				}
 				//me.object3D.rotateOnAxis(new THREE.Vector3(1, 0, 0), 0.1)
 				/*
 				 * skill
 				 */
-				skillConstellationObject.groupAllWebGL.rotation.y		+= 0.01
-				skillConstellationObject.groupAllCSS.rotation.y		+= 0.01
-				skillConstellationObject.update()
+				if(skillConstellationObject.groupAllWebGL.visible === true){
+					skillConstellationObject.groupAllWebGL.rotation.y		+= 0.01
+					skillConstellationObject.groupAllCSS.rotation.y		+= 0.01
+					skillConstellationObject.update()
+				}
 				/*
 				 * box
 				 */
-				box.autoRotate()
+				if(box.group.visible === true){
+					box.autoRotate()
+				}
 			}else{
 				if(controls){
-					log.trace('update control')
 					controls.update()
 				}
 			}
 
-			/*
-			 * rotate the text to towards the camera
-			 */
-			skillConstellationObject.nodes.forEach((node :any)=> {
-				if(node.object){
-					node.object.lookAt(
-							camera.position.x,
-							camera.position.y,
-							camera.position.z,
-						)
-				}
-			})
+			if(skillConstellationObject.groupAllWebGL.visible === true){
+				/*
+				 * rotate the text to towards the camera
+				 */
+				skillConstellationObject.nodes.forEach((node :any)=> {
+					if(node.object){
+						node.object.lookAt(
+								camera.position.x,
+								camera.position.y,
+								camera.position.z,
+							)
+					}
+				})
+			}
 			/*
 				// distortion
 				camera.position.copy( camera.target ).negate();
@@ -1308,12 +1320,6 @@ class Index extends React.Component<Props,State>{
 											</div>
 																				</div>
 									</div>
-									<div className='footer' >
-										{t('tip4picture', {lng : this.state.language})}
-										<a target='_blank' href='https://www.google.com/maps/@9.7337335,124.1204287,3a,75y,214.8h,92.33t/data=!3m6!1e1!3m4!1sLak1KJmVZNJBrgcMNpIzIg!2e0!7i13312!8i6656'>
-											<Location/>
-										</a>
-									</div>
 									<div className='sector' id='sectorA' >
 										<p 
 											style={{
@@ -1324,6 +1330,12 @@ class Index extends React.Component<Props,State>{
 												<div>
 													<span>{t('tip', {lng : this.state.language})}</span><span><Mouse/></span>
 												</div>
+										</div>
+										<div className='footer' >
+											{t('tip4picture', {lng : this.state.language})}
+											<a target='_blank' href='https://www.google.com/maps/@9.7337335,124.1204287,3a,75y,214.8h,92.33t/data=!3m6!1e1!3m4!1sLak1KJmVZNJBrgcMNpIzIg!2e0!7i13312!8i6656'>
+												<Location/>
+											</a>
 										</div>
 									</div>
 									<div className='sector' id='sectorB' >
@@ -1345,6 +1357,12 @@ class Index extends React.Component<Props,State>{
 												{t('skill.button', {lng : this.state.language}).split(' ').map(c => <span>{c}</span>)}
 											</a>
 										</p>
+										</div>
+										<div className='footer' >
+											{t('tip4skill', {lng : this.state.language})}
+											<a target='_blank' href='https://github.com/dadiorchen/constellation-3d'>
+												Github
+											</a>
 										</div>
 									</div>
 									<div className='sector' id='sectorD' >

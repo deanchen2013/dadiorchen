@@ -14,6 +14,7 @@ const resources = {
 			'work.link'		: 'try it out',
 			'tip'		: 'scroll or drag your mouse to look around',
 			'tip4picture'		: 'this beautiful place is at Bohol, Philippine, I have been there for my holiday.',
+			'tip4skill'		: 'I open sourced this component, check it on ',
     }
   },
   zh: {
@@ -32,6 +33,7 @@ const resources = {
 			'English'		: '英文',
 			'tip'		: '请滚动或者拖拽鼠标来查看内容',
 			'tip4picture'		: '图片是菲律宾薄荷岛,在那儿我度过了一个美好假期',
+			'tip4skill'		: '我开源了这个组件, 去看看:',
     }
   }
 };

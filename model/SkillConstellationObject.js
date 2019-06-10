@@ -31,10 +31,12 @@ export default class SkillConstellationObject{
 	async init(){
 		const setting		= this.setting
 		this.groupAllCSS		= new THREE.Group()
+		this.groupAllCSS.visible		= false
 		this.groupAllWebGL		= new THREE.Group()
+		this.groupAllWebGL.visible		= false
 		//hide them first
-		this.groupAllCSS.scale.set(0, 0, 0)
-		this.groupAllWebGL.scale.set(0, 0, 0)
+		this.groupAllCSS.scale.set(0.0001, 0.0001, 0.0001)
+		this.groupAllWebGL.scale.set(0.0001, 0.0001, 0.0001)
 		//to build data
 		const {nodes, links}		= build(this.setting.data)
 		this.nodes		= nodes
@@ -96,11 +98,14 @@ export default class SkillConstellationObject{
 				//the text label
 				const elementDOM		= document.createElement('div')
 				d3.select(elementDOM)
-					.style('cursor', 'pointer')
-					.on('click', function(d){
-						console.log('on click')
-						setting.onClick && setting.onClick()
-					})
+					.classed('node', true)
+
+//				d3.select(elementDOM)
+//					.style('cursor', 'pointer')
+//					.on('click', function(d){
+//						console.log('on click')
+//						setting.onClick && setting.onClick()
+//					})
 				const textElement		= this.setting.textCSS(node)
 				await new Promise(resolve => {
 					ReactDOM.render(
@@ -224,6 +229,12 @@ export default class SkillConstellationObject{
 			}else{
 			}
 		})
+	}
+
+	visible(visible : boolean){
+		this.groupAllCSS.visible		= visible
+		this.groupAllWebGL.visible		= visible
+		d3.selectAll('.node').style('display', visible? 'block':'none')
 	}
 
 }

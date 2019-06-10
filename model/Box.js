@@ -20,6 +20,7 @@ export default class Box {
 	){
 		if(imageURLs.length !== 4) throw new Error('must give 4 images')
 		this.group		= new THREE.Group()
+		this.group.visible		= false
 		//hide
 		this.group.scale.set(0, 0, 0)
 		for(let i = 0; i < imageURLs.length; i++){
@@ -115,6 +116,11 @@ export default class Box {
 
 	unHide(){
 		d3.selectAll('.box-side').style('opacity', '1')
+	}
+
+	visible(visible	: boolean){
+		this.group.visible		= visible
+		d3.selectAll('.box-side').style('display', visible? 'block':'none')
 	}
 }
 

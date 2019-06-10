@@ -513,6 +513,7 @@ body {
 	font-family: Roboto, sans-serif;
 	margin-left		: 10px;
 	z-index		: 1000;
+	pointer-events		: auto;
 }
 
 .footer svg {
