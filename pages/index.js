@@ -124,6 +124,20 @@ class Index extends React.Component<Props,State>{
 				isMobile		: true,
 			})
 		}else{
+			/*
+			 * check language
+			 */
+			//$FlowFixMe
+			if(/zh/.test(navigator.language || navigator.userLanguage) &&
+				this.state.language !== 'zh'
+			){
+				log.info('not zh, jump')
+				if(process.env.NODE_ENV !== 'production'){
+					window.location.href		= '?ln=zh'
+				}else{
+					window.location.href		= '/cn/index.html'
+				}
+			}
 			this.refresh()
 		}
 	}
