@@ -131,11 +131,19 @@ class Index extends React.Component<Props,State>{
 			if(/zh/.test(navigator.language || navigator.userLanguage) &&
 				this.state.language !== 'zh'
 			){
-				log.info('not zh, jump')
+				log.info('not zh')
 				if(process.env.NODE_ENV !== 'production'){
-					window.location.href		= '?ln=zh'
+					if(/ln=en/.test(window.location.href)){
+						log.info('language was set, ignore')
+					}else{
+						window.location.href		= '?ln=zh'
+					}
 				}else{
-					window.location.href		= '/cn/index.html'
+					if(/ln=en/.test(window.location.href)){
+						log.info('language was set, ignore')
+					}else{
+						window.location.href		= '/cn/index.html'
+					}
 				}
 			}
 			this.refresh()
@@ -1281,7 +1289,7 @@ class Index extends React.Component<Props,State>{
 			if(e.target.value === 'zh'){
 				window.location.href		= '/cn/index.html'
 			}else{
-				window.location.href		= '/'
+				window.location.href		= '/?ln=en'
 			}
 		}
 //		this.setState({

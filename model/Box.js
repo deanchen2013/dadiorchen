@@ -72,7 +72,7 @@ export default class Box {
 					//youku need a delay
 						setTimeout(() => {
 						domElement.innerHTML		= `<iframe height=${height} width=${width} src='${url}' frameborder=0 'allowfullscreen'></iframe>`
-					}, 2000)
+					}, 5000)
 				}
 			}else{
 				domElement		= document.createElement('img')
