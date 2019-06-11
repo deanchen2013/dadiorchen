@@ -24,6 +24,7 @@ log.info('version 0.1')
 const isAnimated		= true
 const isSlowDown		= false
 const isHelperShown		= false
+let isUpdating		= true
 const colors		= d3.scaleOrdinal(d3.schemeCategory10)
 
 const sectors		= [
@@ -799,10 +800,13 @@ class Index extends React.Component<Props,State>{
 							.duration(1000)
 							.tween('move', tween())
 							.on('end', () => {
+								log.info('transition into box finished, set isUpdating to false')
+								isUpdating		= false
 								d3.select('.close-icon')
 									.style('opacity', '1')
 									.on('click', () => {
-										log.info('quit box show')
+										log.info('quit box show, set isUpdating to true')
+										isUpdating		= true
 										function tween(){
 											return function(){
 												const scale		= d3.interpolateNumber(1.6, 1)
@@ -863,6 +867,7 @@ class Index extends React.Component<Props,State>{
 					let isRatating		= false
 					function handleNext(direction : 'left'|'right'){
 						//{{{
+						isUpdating		= true
 						if(isRatating){
 							log.warn('is ratating, cancel')
 						}else{
@@ -881,6 +886,10 @@ class Index extends React.Component<Props,State>{
 							d3.transition()
 								.duration(1000)
 								.tween('rotating', tween())
+								.on('end', () => {
+									log.info('switch to next image, set isUpdating false')
+									isUpdating		= false
+								})
 							isRatating		= false
 						}
 						//}}}
@@ -894,7 +903,10 @@ class Index extends React.Component<Props,State>{
 							'/static/demo1.png',
 							'/static/demo2.png',
 							'/static/demo3.png',
-							'/static/demo4.png'
+							thisRef.state.language === 'en' ? 
+								'https://www.youtube.com/embed/jBJRAwwcjZY'
+								:
+								'http://player.youku.com/embed/XNDIyMjYxNTMzNg==',
 						],
 						boxWidth,
 						boxHeight,
@@ -1126,12 +1138,22 @@ class Index extends React.Component<Props,State>{
 		}
 		function animate() {
 			//slow down
-			if(isSlowDown){
-				setTimeout(() => {
+			if(isUpdating){
+				if(isSlowDown){
+					setTimeout(() => {
+						requestAnimationFrame( animate );
+					}, 1000)
+				}else{
 					requestAnimationFrame( animate );
-				}, 1000)
+				}
 			}else{
-				requestAnimationFrame( animate );
+				/*
+				 * jump update
+				 */
+				setTimeout(() => {
+					log.debug('jump animate')
+					animate()
+				}, 500)
 			}
 			update();
 		}
@@ -1277,9 +1299,8 @@ class Index extends React.Component<Props,State>{
 											 src='/static/me.png'
 											 />
 									</div>
-									<div id='container' >
-										<div id='containerDOM' />
-									</div>
+									<div id='container' />
+									<div id='containerDOM' />
 									<div className='nav' >
 										<div className='logo' >
 											<span>Dadior</span>

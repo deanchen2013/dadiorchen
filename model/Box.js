@@ -1,6 +1,8 @@
 //@flow
 /*
  * the box to show pic/video of my product
+ * for Youtube
+ *<iframe width="560" height="315" src="https://www.youtube.com/embed/jBJRAwwcjZY" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
  */
 import THREE		from '../three.js'
 import * as d3		from 'd3'
@@ -11,6 +13,7 @@ log.setLevel('debug')
 export default class Box {
 	group		: any
 	isOpened		: boolean
+	delayLoad		: Function
 
 	constructor(
 		imageURLs		: Array<any>,
@@ -23,21 +26,69 @@ export default class Box {
 		this.group.visible		= false
 		//hide
 		this.group.scale.set(0, 0, 0)
+		let domElement
 		for(let i = 0; i < imageURLs.length; i++){
 			const url		= imageURLs[i]
-			const image		= document.createElement('img')
-			d3.select(image)
-				.classed('box-side', true)
-				.style('width', width + 'px')
-				.style('height', height + 'px')
-				.style('background-color', '#000')
-				.attr('src', url)
-				.attr('draggable', 'false')
-				.on('click', () => {
-					onClick && onClick(i)
-				})
-			log.debug('create image element:', image)
-			const object		= new THREE.CSS3DObject(image)
+			if(/^https?:\/\/www.youtube.com.*$/.test(url)){
+				log.info('mount a video')
+				domElement = document.createElement( 'div' );
+				d3.select(domElement)
+					.classed('box-side', true)
+					.style('width', width + 'px')
+					.style('height', height + 'px')
+					.style('background-color', '#000')
+					.attr('draggable', 'false')
+					.on('click', () => {
+						onClick && onClick(i)
+					})
+//				var iframe = document.createElement( 'iframe' );
+//				iframe.style.width = width + 'px';
+//				iframe.style.height = height	+ 'px';
+//				iframe.style.border = '0px';
+//				iframe.src = url
+//				domElement.appendChild( iframe );
+				this.delayLoad		= () => {
+					domElement.innerHTML		= `<iframe width="${width}px" height="${height}px" src="${url}" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`
+				}
+			}else if(/^https?:\/\/player.youku.com.*$/.test(url)){
+				log.info('mount a video')
+				domElement = document.createElement( 'div' );
+				d3.select(domElement)
+					.classed('box-side', true)
+					.style('width', width + 'px')
+					.style('height', height + 'px')
+					.style('background-color', '#000')
+					.attr('draggable', 'false')
+					.on('click', () => {
+						onClick && onClick(i)
+					})
+//				var iframe = document.createElement( 'iframe' );
+//				iframe.style.width = width + 'px';
+//				iframe.style.height = height	+ 'px';
+//				iframe.style.border = '0px';
+//				iframe.src = url
+//				domElement.appendChild( iframe );
+				this.delayLoad		= () => {
+					//youku need a delay
+						setTimeout(() => {
+						domElement.innerHTML		= `<iframe height=${height} width=${width} src='${url}' frameborder=0 'allowfullscreen'></iframe>`
+					}, 2000)
+				}
+			}else{
+				domElement		= document.createElement('img')
+				d3.select(domElement)
+					.classed('box-side', true)
+					.style('width', width + 'px')
+					.style('height', height + 'px')
+					.style('background-color', '#000')
+					.attr('src', url)
+					.attr('draggable', 'false')
+					.on('click', () => {
+						onClick && onClick(i)
+					})
+				log.debug('create image element:', domElement)
+			}
+			const object		= new THREE.CSS3DObject(domElement)
 			let x, y, z, ry
 			switch(i){
 				case 0:{
@@ -100,13 +151,15 @@ export default class Box {
 				.ease(d3.easeElastic)
 				.tween('explodeBox', tween())
 				.on('end', () => {
+					log.info('explode box over, load video')
+					this.delayLoad()
 				})
 		}
 	}
 
 	autoRotate(){
 		if(this.isOpened){
-			this.group.rotation.y		+= 0.01
+			this.group.rotation.y		-= 0.01
 		}
 	}
 
