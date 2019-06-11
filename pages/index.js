@@ -212,7 +212,7 @@ class Index extends React.Component<Props,State>{
 					 * after small pic was shown, load big pic
 					 */
 					var textureBig		= new THREE.TextureLoader().load(
-						'static/pic2.jpg',
+						'/static/pic2.jpg',
 						async () => {
 							log.info('big pic loaded')
 							material.map		= textureBig
